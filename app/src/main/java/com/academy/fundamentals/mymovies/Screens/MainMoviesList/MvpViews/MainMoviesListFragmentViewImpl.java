@@ -8,11 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.LayoutAnimationController;
-import android.view.animation.TranslateAnimation;
 
 import com.academy.fundamentals.mymovies.Adapters.MoviesRecyclerAdapter;
 import com.academy.fundamentals.mymovies.Models.Movie;
@@ -28,6 +23,7 @@ import butterknife.Unbinder;
 public class MainMoviesListFragmentViewImpl implements MainMoviesListFragmentView,
         MoviesRecyclerAdapter.MoviesAdapterOnClickHandler {
     private static final String TAG = "MainMovListFtViewImpl";
+
     private View mRootView;
     private Unbinder unbinder;
     private MainMoviesListFragmentViewListener mListener;
@@ -66,9 +62,9 @@ public class MainMoviesListFragmentViewImpl implements MainMoviesListFragmentVie
     }
 
     @Override
-    public void onClick(int movieId) {
+    public void onClick(int selectedMoviePos) {
         if (mListener != null) {
-            mListener.onMovieClick(movieId);
+            mListener.onMovieClick(selectedMoviePos);
         }
     }
 

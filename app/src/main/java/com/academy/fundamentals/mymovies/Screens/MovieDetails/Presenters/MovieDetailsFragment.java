@@ -4,11 +4,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.academy.fundamentals.mymovies.Models.Movie;
 import com.academy.fundamentals.mymovies.Screens.Common.Presenters.BaseFragment;
 import com.academy.fundamentals.mymovies.Screens.MovieDetails.MvpViews.MovieDetailsFragmentView;
 import com.academy.fundamentals.mymovies.Screens.MovieDetails.MvpViews.MovieDetailsFragmentViewImpl;
@@ -17,23 +17,24 @@ import com.academy.fundamentals.mymovies.Screens.MovieDetails.MvpViews.MovieDeta
 public class MovieDetailsFragment extends BaseFragment implements
         MovieDetailsFragmentView.MovieDetailsFragmentViewListener{
     private static final String TAG = "MovieDetailsFragment";
-    public static final String ARG_MOVIE_ID = "arg_movie_id";
+    public static final String ARG_MOVIE = "arg_movie";
+
     private MovieDetailsFragmentViewImpl mViewMvp;
-    private int movieId;
+    private Movie movie;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        /*Bundle args = getArguments();
-        if ((args != null) && (args.containsKey(ARG_MOVIE_ID)))
-            movieId = args.getInt(ARG_MOVIE_ID);
+        Bundle args = getArguments();
+        if ((args != null) && (args.containsKey(ARG_MOVIE)))
+            movie = (Movie) args.getSerializable(ARG_MOVIE);
         else
-            throw new IllegalStateException("MovieDetailsFragment must be started with movie ID argument");
-*/
+            throw new IllegalStateException("MovieDetailsFragment must be started with a Movie object");
+
         mViewMvp = new MovieDetailsFragmentViewImpl(inflater, container);
         mViewMvp.setListener(this);
 
-        mViewMvp.bindMovieDetails(null);
+        mViewMvp.bindMovieDetails(movie);
 
         return mViewMvp.getRootView();
     }

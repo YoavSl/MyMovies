@@ -22,7 +22,8 @@ import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOption
 
 
 public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAdapter.MoviesRecyclerAdapterViewHolder> {
-    private String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/w500";
+    private final static String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/w500";
+
     private final MoviesAdapterOnClickHandler mClickHandler;
     private List<Movie> movies;
 
@@ -33,7 +34,6 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
     public MoviesRecyclerAdapter(MoviesAdapterOnClickHandler clickHandler, List<Movie> movies) {
         mClickHandler = clickHandler;
         this.movies = movies;
-
     }
 
     @NonNull
@@ -77,8 +77,8 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
 
         @Override
         public void onClick(View view) {
-            int movieId = getAdapterPosition();
-            mClickHandler.onClick(movieId);
+            int selectedMoviePos = getAdapterPosition();
+            mClickHandler.onClick(selectedMoviePos);
         }
 
         private void bind(Movie movie) {

@@ -11,6 +11,7 @@ import com.academy.fundamentals.mymovies.R;
 
 public class RootViewMvpImpl implements ViewMvp {
     private static final String TAG = "RootViewMvpImpl";
+
     private View mRootView;
 
     public RootViewMvpImpl(Context context, ViewGroup container) {

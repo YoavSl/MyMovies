@@ -22,9 +22,10 @@ public interface TmdbAPI {
     );
 
     @GET("movie/{id}")
-    public Call<Movie> getMovieById(
+    public Call<Movie> getMovie(
             @Path("id") long id,
-            @Query("api_key") String key
+            @Query("api_key") String key,
+            @Query("language") String language
     );
 
     @GET("search/movie")

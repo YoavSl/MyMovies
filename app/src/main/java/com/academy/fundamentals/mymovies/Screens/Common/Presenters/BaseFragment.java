@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 
 public abstract class BaseFragment extends Fragment {
     private static final String TAG = "BaseFragment";
+
     private AbstractFragmentCallback mCallback;
 
     @Override
@@ -43,6 +44,5 @@ public abstract class BaseFragment extends Fragment {
     public interface AbstractFragmentCallback {
         void replaceFragment(Class<? extends Fragment> claz, boolean addToBackStack,
                              Bundle args);
-
     }
 }

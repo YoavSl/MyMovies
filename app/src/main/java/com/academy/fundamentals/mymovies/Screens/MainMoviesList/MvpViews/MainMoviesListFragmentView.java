@@ -9,7 +9,7 @@ import java.util.List;
 public interface MainMoviesListFragmentView extends ViewMvp {
 
     interface MainMoviesListFragmentViewListener {
-        void onMovieClick(int movieId);
+        void onMovieClick(int selectedMoviePos);
 
         void onListScroll();
     }

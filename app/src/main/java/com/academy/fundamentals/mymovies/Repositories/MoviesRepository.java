@@ -5,7 +5,9 @@ import android.support.annotation.NonNull;
 
 import com.academy.fundamentals.mymovies.API.APIClient;
 import com.academy.fundamentals.mymovies.API.TmdbAPI;
+import com.academy.fundamentals.mymovies.Models.Movie;
 import com.academy.fundamentals.mymovies.Models.MoviesResponse;
+import com.academy.fundamentals.mymovies.OnGetMovieCallback;
 import com.academy.fundamentals.mymovies.OnGetMoviesCallback;
 import com.academy.fundamentals.mymovies.R;
 
@@ -17,6 +19,7 @@ import retrofit2.Retrofit;
 
 public class MoviesRepository {
     private static final String LANGUAGE = "en-US";
+
     private static MoviesRepository repository;
     private static APIClient apiClient;
 
@@ -45,19 +48,44 @@ public class MoviesRepository {
                         //progressDoalog.dismiss();
                         if (response.isSuccessful()) {
                             MoviesResponse moviesResponse = response.body();
-                            if (moviesResponse != null && moviesResponse.getMovies() != null) {
+
+                            if (moviesResponse != null && moviesResponse.getMovies() != null)
                                 callback.onSuccess(moviesResponse.getMovies(), moviesResponse.getPage());
-                            } else {
+                            else
                                 callback.onError();
-                            }
-                        } else {
-                            callback.onError();
                         }
+                        else
+                            callback.onError();
                     }
 
                     @Override
                     public void onFailure(Call<MoviesResponse> call, Throwable t) {
                         //progressDoalog.dismiss();
+                        callback.onError();
+                    }
+                });
+    }
+
+    public void getMovie(Context context, int movieId, final OnGetMovieCallback callback) {
+        api.getMovie(movieId,
+                context.getString(R.string.api_key_tmdb), LANGUAGE)
+                .enqueue(new Callback<Movie>() {
+                    @Override
+                    public void onResponse(@NonNull Call<Movie> call, @NonNull Response<Movie> response) {
+                        if (response.isSuccessful()) {
+                            Movie movie = response.body();
+
+                            if (movie != null)
+                                callback.onSuccess(movie);
+                            else
+                                callback.onError();
+                        }
+                        else
+                            callback.onError();
+                    }
+
+                    @Override
+                    public void onFailure(Call<Movie> call, Throwable t) {
                         callback.onError();
                     }
                 });
