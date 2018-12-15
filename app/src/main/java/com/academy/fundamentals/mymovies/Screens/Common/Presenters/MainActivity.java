@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.academy.fundamentals.mymovies.R;
 import com.academy.fundamentals.mymovies.Screens.Common.MvpViews.RootViewMvpImpl;
-import com.academy.fundamentals.mymovies.Screens.MoviesList.Presenters.MoviesListFragment;
+import com.academy.fundamentals.mymovies.Screens.MainMoviesList.Presenters.MainMoviesListFragment;
 
 
 public class MainActivity extends AppCompatActivity implements BaseFragment.AbstractFragmentCallback {
@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity implements BaseFragment.Abst
 
         //Show the default fragment if the application is not restored
         if (savedInstanceState == null)
-            replaceFragment(MoviesListFragment.class, false, null);
+            replaceFragment(MainMoviesListFragment.class, false, null);
     }
 
     @Override
@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements BaseFragment.Abst
             ft.addToBackStack(null);
         }
 
+        ft.setCustomAnimations(R.anim.anim_slide_in_left, R.anim.anim_slide_out_left, R.anim.anim_slide_in_right, R.anim.anim_slide_out_right);
         ft.replace(R.id.fragmentContainerFL, newFragment, claz.getClass().getSimpleName());
         ft.commit();
     }

@@ -8,45 +8,32 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.academy.fundamentals.mymovies.Models.Movie;
 import com.academy.fundamentals.mymovies.R;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
+
 
 public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAdapter.MoviesRecyclerAdapterViewHolder> {
+    private String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/w500";
     private final MoviesAdapterOnClickHandler mClickHandler;
-    private static final int CARDS_COUNT = 5;
+    private List<Movie> movies;
 
     public interface MoviesAdapterOnClickHandler {
-        void onClick(int movieIndex);
+        void onClick(int movieId);
     }
 
-    public MoviesRecyclerAdapter(MoviesAdapterOnClickHandler clickHandler) {
+    public MoviesRecyclerAdapter(MoviesAdapterOnClickHandler clickHandler, List<Movie> movies) {
         mClickHandler = clickHandler;
-    }
+        this.movies = movies;
 
-    class MoviesRecyclerAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        @BindView(R.id.coverIV) ImageView coverIV;
-        @BindView(R.id.titleTV) TextView titleTV;
-        @BindView(R.id.overviewTV) TextView overviewTV;
-
-        public MoviesRecyclerAdapterViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this,itemView);
-            itemView.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View view) {
-            int movieIndex = getAdapterPosition();
-            mClickHandler.onClick(movieIndex);
-        }
-    }
-
-    @Override
-    public int getItemCount() {
-        return CARDS_COUNT;
     }
 
     @NonNull
@@ -62,24 +49,56 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
 
     @Override
     public void onBindViewHolder(@NonNull MoviesRecyclerAdapterViewHolder moviesRecyclerAdapterViewHolder, int position) {
-        switch (position){
-            case 0:
-                moviesRecyclerAdapterViewHolder.coverIV.setBackgroundResource(R.drawable.bp);
-                break;
-            case 1:
-                moviesRecyclerAdapterViewHolder.coverIV.setBackgroundResource(R.drawable.d2);
-                break;
-            case 2:
-                moviesRecyclerAdapterViewHolder.coverIV.setBackgroundResource(R.drawable.jw);
-                break;
-            case 3:
-                moviesRecyclerAdapterViewHolder.coverIV.setBackgroundResource(R.drawable.tfp);
-                break;
-            case 4:
-                moviesRecyclerAdapterViewHolder.coverIV.setBackgroundResource(R.drawable.tm);
-                break;
+        moviesRecyclerAdapterViewHolder.bind(movies.get(position));
+    }
+
+    @Override
+    public int getItemCount() {
+        return movies.size();
+    }
+
+    public void appendMovies(List<Movie> moviesToAppend) {
+        movies.addAll(moviesToAppend);
+        notifyDataSetChanged();
+    }
+
+    class MoviesRecyclerAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        @BindView(R.id.posterIV) ImageView posterIV;
+        @BindView(R.id.releaseDateTV) TextView releaseDateTV;
+        @BindView(R.id.ratingTV) TextView ratingTV;
+        @BindView(R.id.titleTV) TextView titleTV;
+        @BindView(R.id.overviewTV) TextView overviewTV;
+
+        public MoviesRecyclerAdapterViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this,itemView);
+            itemView.setOnClickListener(this);
         }
-        moviesRecyclerAdapterViewHolder.titleTV.setText("Test " + position);
-        moviesRecyclerAdapterViewHolder.overviewTV.setText("Overview " + position);
+
+        @Override
+        public void onClick(View view) {
+            int movieId = getAdapterPosition();
+            mClickHandler.onClick(movieId);
+        }
+
+        private void bind(Movie movie) {
+            releaseDateTV.setText(movie.getReleaseDate().split("-")[0]);   //Get only the year
+            ratingTV.setText(String.valueOf(movie.getRating()));
+            titleTV.setText(movie.getTitle());
+            overviewTV.setText(movie.getOverview());
+
+            /*Glide.with(myFragment)
+                    .load(url)
+                    .centerCrop()
+                    .placeholder(R.drawable.loading_spinner)
+                    .crossFade()
+                    .into(myImageView);*/
+
+            Glide.with(itemView)
+                    .load(IMAGE_BASE_URL + movie.getPosterPath())
+                    .transition(withCrossFade())
+                    .apply(RequestOptions.placeholderOf(R.color.colorPrimary))
+                    .into(posterIV);
+        }
     }
 }

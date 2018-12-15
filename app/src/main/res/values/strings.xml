@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">My Movies</string>
     <string name="title_activity_main">M y . M o v i e s</string>
+    <string name="api_key_tmdb">e46fac10656466cafbc9ee4d988cdcb1</string>
+    <string name="movies_category_popular">Popular</string>
+    <string name="movies_category_top_rated">Top Rated</string>
+    <string name="movies_category_upcoming">Upcoming</string>
 </resources>
