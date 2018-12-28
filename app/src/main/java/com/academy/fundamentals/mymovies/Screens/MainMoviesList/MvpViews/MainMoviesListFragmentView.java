@@ -9,6 +9,8 @@ import java.util.List;
 public interface MainMoviesListFragmentView extends ViewMvp {
 
     interface MainMoviesListFragmentViewListener {
+        void onFavoritesListClick();
+
         void onMovieClick(int selectedMoviePos);
 
         void onListScroll();
@@ -19,6 +21,8 @@ public interface MainMoviesListFragmentView extends ViewMvp {
     void displayMovies(List<Movie> movies);
 
     void getMoviesFailed();
+
+    void refreshList();
 
     void unbindButterKnife();
 }

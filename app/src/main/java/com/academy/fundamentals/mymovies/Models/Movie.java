@@ -1,13 +1,17 @@
 package com.academy.fundamentals.mymovies.Models;
 
+import android.support.annotation.NonNull;
+import android.util.Log;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 
-public class Movie implements Serializable {
+public class Movie implements Serializable, Comparable<Movie> {
 
     @SerializedName("id")
     @Expose
@@ -41,9 +45,15 @@ public class Movie implements Serializable {
     @Expose
     private float rating;
 
+    //Used for all get movies queries except for get movie by id
     @SerializedName("genre_ids")
     @Expose
     private List<Integer> genreIds;
+
+    //Used only for get movie by id query
+    @SerializedName("genres")
+    @Expose
+    private List<Genre> genres;
 
     public int getId() {
         return id;
@@ -110,10 +120,23 @@ public class Movie implements Serializable {
     }
 
     public List<Integer> getGenreIds() {
+        if (genreIds == null) {
+            List <Integer> genreIdsTemp = new ArrayList<>();;
+
+            for (Genre genre : genres)
+                genreIdsTemp.add(genre.getId());
+
+            setGenreIds(genreIdsTemp);
+        }
         return genreIds;
     }
 
     public void setGenreIds(List<Integer> genreIds) {
         this.genreIds = genreIds;
+    }
+
+    @Override
+    public int compareTo(@NonNull Movie movie) {
+        return 0;
     }
 }

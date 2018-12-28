@@ -1,5 +1,11 @@
 <resources >
     <dimen name="toolbar_text_size">18sp</dimen>
-    <dimen name="fab_margin">16dp</dimen>
-
+    <dimen name="fab_margins">16dp</dimen>
+    <dimen name="chip_main_list_release_date_width">50dp</dimen>
+    <dimen name="chip_main_list_release_date_height">20dp</dimen>
+    <dimen name="chip_main_list_release_date_margin_start">7dp</dimen>
+    <dimen name="chip_main_list_release_date_margin_top">7dp</dimen>
+    <dimen name="chip_main_list_release_date_text_size">12sp</dimen>
+    <dimen name="view_movie_card_in_favorites_height">2.5dp</dimen>
+    <dimen name="image_view_movie_card_poster_size">105dp</dimen>
 </resources>

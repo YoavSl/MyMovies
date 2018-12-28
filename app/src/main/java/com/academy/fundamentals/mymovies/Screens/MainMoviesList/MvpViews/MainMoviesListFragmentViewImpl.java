@@ -2,10 +2,14 @@ package com.academy.fundamentals.mymovies.Screens.MainMoviesList.MvpViews;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -29,13 +33,29 @@ public class MainMoviesListFragmentViewImpl implements MainMoviesListFragmentVie
     private MainMoviesListFragmentViewListener mListener;
     private MoviesRecyclerAdapter mMoviesRecyclerAdapter;
 
+    @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.moviesRV) RecyclerView moviesRV;
 
     public MainMoviesListFragmentViewImpl(LayoutInflater inflater, ViewGroup container) {
         mRootView = inflater.inflate(R.layout.fragment_main_movies_list, container, false);
         unbinder = ButterKnife.bind(this, mRootView);
 
+        confToolbar();
         confMoviesList();
+    }
+
+    private void confToolbar() {
+        toolbar.inflateMenu(R.menu.toolbar_menu_main_list);
+
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (mListener != null)
+                    mListener.onFavoritesListClick();
+
+                return true;
+            }
+        });
     }
 
     private void confMoviesList() {
@@ -53,9 +73,8 @@ public class MainMoviesListFragmentViewImpl implements MainMoviesListFragmentVie
                 int firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
 
                 if ((firstVisibleItem + visibleItemCount) >= (totalItemCount / 2)) {
-                    if (mListener != null) {
+                    if (mListener != null)
                         mListener.onListScroll();
-                    }
                 }
             }
         });
@@ -76,7 +95,7 @@ public class MainMoviesListFragmentViewImpl implements MainMoviesListFragmentVie
     @Override
     public void displayMovies(List<Movie> movies) {
         if (mMoviesRecyclerAdapter == null) {
-            mMoviesRecyclerAdapter = new MoviesRecyclerAdapter(this, movies);
+            mMoviesRecyclerAdapter = new MoviesRecyclerAdapter(mRootView.getContext(), this, movies);
             moviesRV.setAdapter(mMoviesRecyclerAdapter);
         }
         else
@@ -85,7 +104,12 @@ public class MainMoviesListFragmentViewImpl implements MainMoviesListFragmentVie
 
     @Override
     public void getMoviesFailed() {
-        Log.e(TAG, "Error, couldn't get movies.");
+        Log.e(TAG, "Error, couldn't get movies");
+    }
+
+    @Override
+    public void refreshList() {
+        mMoviesRecyclerAdapter.notifyDataSetChanged();
     }
 
     @Override

@@ -29,7 +29,9 @@ public class MainActivity extends AppCompatActivity implements BaseFragment.Abst
     @Override
     public void replaceFragment(Class<? extends Fragment> claz, boolean addToBackStack, Bundle args) {
         Fragment newFragment;
+
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.setCustomAnimations(R.anim.anim_slide_in_left, R.anim.anim_slide_out_left, R.anim.anim_slide_in_right, R.anim.anim_slide_out_right);
 
         try {
             newFragment = claz.newInstance();
@@ -50,10 +52,15 @@ public class MainActivity extends AppCompatActivity implements BaseFragment.Abst
             ft.hide(getSupportFragmentManager().findFragmentById(R.id.fragmentContainerFL));
         }
         else
-            ft.replace(R.id.fragmentContainerFL, newFragment, claz.getClass().getSimpleName()); */
+            ft.replace(R.id.fragmentContainerFL, newFragment, claz.getClass().getSimpleName());*/
 
-        ft.replace(R.id.fragmentContainerFL, newFragment, claz.getClass().getSimpleName());
-        ft.setCustomAnimations(R.anim.anim_slide_in_left, R.anim.anim_slide_out_left, R.anim.anim_slide_in_right, R.anim.anim_slide_out_right);
+        if (!(newFragment instanceof MainMoviesListFragment)) {
+            ft.add(R.id.fragmentContainerFL, newFragment, claz.getClass().getSimpleName());
+            ft.hide(getSupportFragmentManager().findFragmentById(R.id.fragmentContainerFL));
+        }
+        else
+            ft.replace(R.id.fragmentContainerFL, newFragment, claz.getClass().getSimpleName());
+
         ft.commit();
     }
 }

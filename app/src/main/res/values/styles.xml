@@ -29,4 +29,16 @@
         <item name="android:textSize">@dimen/toolbar_text_size</item>
     </style>
 
+    <style name="ChipTextReleaseDateMainList" >
+        <item name="android:textSize">@dimen/chip_main_list_release_date_text_size</item>
+    </style>
+
+    <style name="RecyclerView" >
+        <item name="android:overScrollMode">never</item>
+    </style>
+
+    <style name="ImageViewPoster" >
+        <item name="android:scaleType">centerCrop</item>
+    </style>
+
 </resources>

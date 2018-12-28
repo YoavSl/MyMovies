@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.academy.fundamentals.mymovies.Adapters.MoviesDetailsPagerAdapter;
+import com.academy.fundamentals.mymovies.Models.Genre;
 import com.academy.fundamentals.mymovies.Models.Movie;
 import com.academy.fundamentals.mymovies.R;
 
@@ -36,10 +37,10 @@ public class MoviesDetailsListFragmentViewImpl implements MoviesDetailsListFragm
     }
 
     @Override
-    public void confMoviesList(List<Movie> movies, int selectedMoviePos) {
+    public void confMoviesList(List<Movie> movies, List<Genre> genres, int selectedMoviePos) {
         MoviesDetailsPagerAdapter mMoviesDetailsPagerAdapter = new MoviesDetailsPagerAdapter(
                 ((FragmentActivity) mRootView.getContext()).getSupportFragmentManager(),
-                movies);
+                movies, genres);
         moviesVP.setAdapter(mMoviesDetailsPagerAdapter);
         moviesVP.setCurrentItem(selectedMoviePos);
     }
