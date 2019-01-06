@@ -33,7 +33,6 @@ public class MainMoviesListFragment extends BaseFragment implements
     private MainMoviesListFragmentViewImpl mViewMvp;
     private MoviesRepository moviesRepository;
     private List<Movie> currentMovies;
-    private List<Genre> genres;
     private boolean isFetchingMovies;
     private int currentPage = 1;
 
@@ -44,17 +43,21 @@ public class MainMoviesListFragment extends BaseFragment implements
         mViewMvp.setListener(this);
 
         moviesRepository = MoviesRepository.getInstance();
-        getGenres(currentPage);
+
+        if (moviesRepository.getGenres() == null)
+            getGenres();
+        else
+            getMovies(currentPage);
 
         return mViewMvp.getRootView();
     }
 
-    private void getGenres(final int page) {
+    private void getGenres() {
         moviesRepository.getGenres(getContext(), new OnGetGenresCallback() {
             @Override
             public void onSuccess(List<Genre> genresList) {
-                genres = genresList;
-                getMovies(page);
+                moviesRepository.setGenres(genresList);
+                getMovies(currentPage);
             }
 
             @Override
@@ -96,7 +99,7 @@ public class MainMoviesListFragment extends BaseFragment implements
     public void onMovieClick(int selectedMoviePos) {
         Bundle bundle = new Bundle(3);
         bundle.putSerializable(MoviesDetailsListFragment.ARG_MOVIES, (Serializable) currentMovies);
-        bundle.putSerializable(MoviesDetailsListFragment.ARG_GENRES, (Serializable) genres);
+        bundle.putSerializable(MoviesDetailsListFragment.ARG_GENRES, (Serializable) moviesRepository.getGenres());
         bundle.putInt(MoviesDetailsListFragment.ARG_SELECTED_MOVIE_POS, selectedMoviePos);
 
         replaceFragment(MoviesDetailsListFragment.class, true, bundle);

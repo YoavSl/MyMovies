@@ -89,8 +89,8 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="ic_favorites_list" />
-                            <entry key="sourceFile" value="C:\Users\Yoav\Desktop\round-stars-24px.svg" />
+                            <entry key="outputName" value="ic_sort_ascending" />
+                            <entry key="sourceFile" value="C:\Users\Yoav\Desktop\round-arrow_upward-24px.svg" />
                           </map>
                         </option>
                       </PersistentState>

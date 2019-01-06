@@ -7,15 +7,16 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.academy.fundamentals.mymovies.Callbacks.OnGetGenresCallback;
 import com.academy.fundamentals.mymovies.Callbacks.OnGetMovieCallback;
+import com.academy.fundamentals.mymovies.HelperClasses.SortMovies;
 import com.academy.fundamentals.mymovies.Models.Genre;
 import com.academy.fundamentals.mymovies.Models.Movie;
+import com.academy.fundamentals.mymovies.Models.SortType;
 import com.academy.fundamentals.mymovies.Repositories.FavoritesRepository;
 import com.academy.fundamentals.mymovies.Repositories.MoviesRepository;
 import com.academy.fundamentals.mymovies.Screens.Common.Presenters.BaseFragment;
@@ -32,12 +33,14 @@ import java.util.Set;
 public class FavoritesListFragment extends BaseFragment implements
         FavoritesListFragmentView.FavoritesListFragmentViewListener {
     private static final String TAG = "FavoritesListFragment";
+    public static SortType DEFAULT_SORT_TYPE = SortType.NAME;
+    public static boolean DEFAULT_ASCENDING_SORT = true;
 
     private FavoritesListFragmentViewImpl mViewMvp;
     private FavoritesRepository favoritesRepository;
     private MoviesRepository moviesRepository;
     private List<Movie> movies = new ArrayList<>();
-    private List<Genre> genres;
+    private int totalMoviesCounter, moviesLoadedCounter = 0;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -47,16 +50,26 @@ public class FavoritesListFragment extends BaseFragment implements
 
         favoritesRepository = FavoritesRepository.getInstance(inflater.getContext());
         moviesRepository = MoviesRepository.getInstance();
-        getGenres();
+
+        if (moviesRepository.getGenres() == null)
+            getGenres();
+        else
+            getMovieIds();
 
         return mViewMvp.getRootView();
+    }
+
+    @Override
+    public void onSortModeClick(SortType sortType, boolean ascendingSort) {
+        movies = SortMovies.sortByType(movies, sortType, ascendingSort);
+        mViewMvp.updateMoviesOrder(movies);
     }
 
     private void getGenres() {
         moviesRepository.getGenres(getContext(), new OnGetGenresCallback() {
             @Override
             public void onSuccess(List<Genre> genresList) {
-                genres = genresList;
+                moviesRepository.setGenres(genresList);
                 getMovieIds();
             }
 
@@ -68,11 +81,16 @@ public class FavoritesListFragment extends BaseFragment implements
 
     private void getMovieIds() {
         Set<String> movieIds = favoritesRepository.getItems();
+        totalMoviesCounter = movieIds.size();
+        mViewMvp.displayMoviesCount(totalMoviesCounter);
 
         if (movieIds.isEmpty()) {
             mViewMvp.displayEmptyList();
             return;
         }
+
+        mViewMvp.setSortMenu();
+        mViewMvp.displayLoadingAnimation();
 
         for(String movieId : movieIds)
             getMovie(Integer.parseInt(movieId));
@@ -83,12 +101,19 @@ public class FavoritesListFragment extends BaseFragment implements
             @Override
             public void onSuccess(Movie movie) {
                 movies.add(movie);
-                mViewMvp.displayMovie(movie);
+                moviesLoadedCounter++;
+
+                if (moviesLoadedCounter == totalMoviesCounter)
+                    mViewMvp.displayMovies(movies);
             }
 
             @Override
             public void onError() {
                 mViewMvp.getMovieFailed(movieId);
+                moviesLoadedCounter++;
+
+                if (moviesLoadedCounter == totalMoviesCounter)
+                    mViewMvp.displayMovies(movies);
             }
         });
     }
@@ -97,7 +122,7 @@ public class FavoritesListFragment extends BaseFragment implements
     public void onMovieClick(int selectedMoviePos) {
         Bundle bundle = new Bundle(3);
         bundle.putSerializable(MoviesDetailsListFragment.ARG_MOVIES, (Serializable) movies);
-        bundle.putSerializable(MoviesDetailsListFragment.ARG_GENRES, (Serializable) genres);
+        bundle.putSerializable(MoviesDetailsListFragment.ARG_GENRES, (Serializable) moviesRepository.getGenres());
         bundle.putInt(MoviesDetailsListFragment.ARG_SELECTED_MOVIE_POS, selectedMoviePos);
 
         replaceFragment(MoviesDetailsListFragment.class, true, bundle);

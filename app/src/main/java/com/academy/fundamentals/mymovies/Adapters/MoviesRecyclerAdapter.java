@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.design.chip.Chip;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,29 +30,29 @@ import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOption
 public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAdapter.MoviesRecyclerAdapterViewHolder> {
     private final static String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/w500";
 
-    private FavoritesRepository favoritesRepository;
     private final MoviesAdapterOnClickHandler mClickHandler;
-    private List<Movie> movies = new ArrayList<>();;
+    private FavoritesRepository favoritesRepository;
+    private List<Movie> movies = new ArrayList<>();
     private AlphaAnimation fadeIn, fadeOut;
 
     public interface MoviesAdapterOnClickHandler {
-        void onClick(int movieId);
+        void onMovieClick(int movieId);
     }
 
-    private MoviesRecyclerAdapter(Context context, MoviesAdapterOnClickHandler clickHandler) {
-        favoritesRepository = FavoritesRepository.getInstance(context);
+    private MoviesRecyclerAdapter(MoviesAdapterOnClickHandler clickHandler, Context context) {
         mClickHandler = clickHandler;
+        favoritesRepository = FavoritesRepository.getInstance(context);
 
         confInFavoritesAnimations();
     }
 
-    public MoviesRecyclerAdapter(Context context, MoviesAdapterOnClickHandler clickHandler, Movie movie) {
-        this(context, clickHandler);
+    public MoviesRecyclerAdapter(MoviesAdapterOnClickHandler clickHandler, Context context, Movie movie) {
+        this(clickHandler, context);
         this.movies.add(movie);
     }
 
-    public MoviesRecyclerAdapter(Context context, MoviesAdapterOnClickHandler clickHandler, List<Movie> movies) {
-        this(context, clickHandler);
+    public MoviesRecyclerAdapter(MoviesAdapterOnClickHandler clickHandler, Context context, List<Movie> movies) {
+        this(clickHandler, context);
         this.movies = movies;
     }
 
@@ -86,14 +87,19 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
         notifyDataSetChanged();
     }
 
+    public void updateMoviesOrder(List<Movie> movies) {
+        this.movies = movies;
+        notifyDataSetChanged();
+    }
+
     class MoviesRecyclerAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
             View.OnLongClickListener {
-        @BindView(R.id.inFavoritesVW) View inFavoritesVW;
         @BindView(R.id.posterIV) ImageView posterIV;
         @BindView(R.id.releaseDateCP) Chip releaseDateCP;
         @BindView(R.id.titleTV) TextView titleTV;
         @BindView(R.id.ratingTV) TextView ratingTV;
         @BindView(R.id.overviewTV) TextView overviewTV;
+        @BindView(R.id.inFavoritesVW) View inFavoritesVW;
 
         private MoviesRecyclerAdapterViewHolder(View itemView) {
             super(itemView);
@@ -101,29 +107,6 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
 
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
-        }
-
-        @Override
-        public void onClick(View view) {
-            int selectedMoviePos = getAdapterPosition();
-            mClickHandler.onClick(selectedMoviePos);
-        }
-
-        @Override
-        public boolean onLongClick(View view) {
-            int selectedMovieId = movies.get(getAdapterPosition()).getId();
-
-            if (favoritesRepository.checkIfExists(selectedMovieId)) {
-                /*movies.remove(getAdapterPosition());
-                notifyItemRemoved(getAdapterPosition());*/
-                inFavoritesVW.startAnimation(fadeOut);
-                favoritesRepository.removeItem(selectedMovieId);
-            }
-            else {
-                inFavoritesVW.startAnimation(fadeIn);
-                favoritesRepository.addItem(selectedMovieId);
-            }
-            return true;
         }
 
         private void bind(final Movie movie) {
@@ -142,6 +125,40 @@ public class MoviesRecyclerAdapter extends RecyclerView.Adapter<MoviesRecyclerAd
                 inFavoritesVW.setVisibility(View.VISIBLE);
             else
                 inFavoritesVW.setVisibility(View.INVISIBLE);
+
+            /* Sort the issue of when the title consists of 2 lines or more, the overview
+            text won't display ellipsize "end" at the end of line 3 (cause it's configured
+            to 4 max lines) *//*
+            titleTV.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (titleTV.getLineCount() == 2)
+                        overviewTV.setMaxLines(3);
+                }
+            });*/
+        }
+
+        @Override
+        public void onClick(View view) {
+            int selectedMoviePos = getAdapterPosition();
+            mClickHandler.onMovieClick(selectedMoviePos);
+        }
+
+        @Override
+        public boolean onLongClick(View view) {
+            int selectedMovieId = movies.get(getAdapterPosition()).getId();
+
+            if (favoritesRepository.checkIfExists(selectedMovieId)) {
+                /*movies.remove(getAdapterPosition());
+                notifyItemRemoved(getAdapterPosition());*/
+                inFavoritesVW.startAnimation(fadeOut);
+                favoritesRepository.removeItem(selectedMovieId);
+            }
+            else {
+                inFavoritesVW.startAnimation(fadeIn);
+                favoritesRepository.addItem(selectedMovieId);
+            }
+            return true;
         }
     }
 

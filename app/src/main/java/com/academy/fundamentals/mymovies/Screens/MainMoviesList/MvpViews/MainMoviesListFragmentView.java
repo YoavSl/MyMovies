@@ -1,6 +1,7 @@
 package com.academy.fundamentals.mymovies.Screens.MainMoviesList.MvpViews;
 
 import com.academy.fundamentals.mymovies.Models.Movie;
+import com.academy.fundamentals.mymovies.Models.SortType;
 import com.academy.fundamentals.mymovies.Screens.Common.MvpViews.ViewMvp;
 
 import java.util.List;

@@ -4,7 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="105dp"
+    android:layout_height="108dp"
     android:layout_marginStart="15dp"
     android:layout_marginEnd="15dp"
     android:layout_marginTop="8dp"
@@ -16,18 +16,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <View
-            android:id="@+id/inFavoritesVW"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/view_movie_card_in_favorites_height"
-            android:background="@drawable/shape_in_favorites"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
         <ImageView
             android:id="@+id/posterIV"
-            android:layout_width="@dimen/image_view_movie_card_poster_size"
-            android:layout_height="@dimen/image_view_movie_card_poster_size"
+            android:layout_width="@dimen/image_view_movie_card_poster_width"
+            android:layout_height="match_parent"
             android:contentDescription="@string/image_view_description_movie_poster"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -86,7 +78,7 @@
             android:layout_height="0dp"
             android:layout_marginStart="7sp"
             android:layout_marginEnd="7sp"
-            android:layout_marginTop="5sp"
+            android:layout_marginTop="4sp"
             android:layout_marginBottom="7dp"
             android:textSize="13sp"
             android:textColor="@android:color/black"
@@ -95,6 +87,15 @@
             app:layout_constraintStart_toEndOf="@id/posterIV"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/titleTV"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <View
+            android:id="@+id/inFavoritesVW"
+            android:layout_width="@dimen/view_movie_card_in_favorites_width"
+            android:layout_height="0dp"
+            android:background="@drawable/shape_in_favorites"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
 
     </android.support.constraint.ConstraintLayout>

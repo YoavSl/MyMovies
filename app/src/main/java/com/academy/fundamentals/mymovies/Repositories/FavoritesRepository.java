@@ -3,6 +3,7 @@ package com.academy.fundamentals.mymovies.Repositories;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -13,7 +14,7 @@ public class FavoritesRepository {
     private static final String FAVORITES_KEY = "favorites_key";
     private static FavoritesRepository repository;
     private SharedPreferences mSharedPrefs;
-    private Set<String> favoriteItems;
+    private Set<String> favoriteItems = new HashSet<>();
 
     private FavoritesRepository(Context context) {
         mSharedPrefs = context.getSharedPreferences(PREFS_NAME, MODE_PRIVATE);

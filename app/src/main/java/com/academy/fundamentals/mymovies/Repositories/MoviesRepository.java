@@ -8,6 +8,7 @@ import com.academy.fundamentals.mymovies.API.TmdbAPI;
 import com.academy.fundamentals.mymovies.Callbacks.OnGetGenresCallback;
 import com.academy.fundamentals.mymovies.Callbacks.OnGetReviewsCallback;
 import com.academy.fundamentals.mymovies.Callbacks.OnGetTrailersCallback;
+import com.academy.fundamentals.mymovies.Models.Genre;
 import com.academy.fundamentals.mymovies.Models.GenresResponse;
 import com.academy.fundamentals.mymovies.Models.Movie;
 import com.academy.fundamentals.mymovies.Models.MoviesResponse;
@@ -16,6 +17,8 @@ import com.academy.fundamentals.mymovies.Callbacks.OnGetMoviesCallback;
 import com.academy.fundamentals.mymovies.Models.ReviewsResponse;
 import com.academy.fundamentals.mymovies.Models.TrailersResponse;
 import com.academy.fundamentals.mymovies.R;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -28,6 +31,7 @@ public class MoviesRepository {
 
     private static MoviesRepository repository;
     private static APIClient apiClient;
+    private List<Genre> genres;
 
     private TmdbAPI api;
 
@@ -166,5 +170,13 @@ public class MoviesRepository {
                         callback.onError();
                     }
                 });
+    }
+
+    public List<Genre> getGenres() {
+        return genres;
+    }
+
+    public void setGenres(List<Genre> genres) {
+        this.genres = genres;
     }
 }

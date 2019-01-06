@@ -6,6 +6,6 @@
     <dimen name="chip_main_list_release_date_margin_start">7dp</dimen>
     <dimen name="chip_main_list_release_date_margin_top">7dp</dimen>
     <dimen name="chip_main_list_release_date_text_size">12sp</dimen>
-    <dimen name="view_movie_card_in_favorites_height">2.5dp</dimen>
-    <dimen name="image_view_movie_card_poster_size">105dp</dimen>
+    <dimen name="view_movie_card_in_favorites_width">2.3dp</dimen>
+    <dimen name="image_view_movie_card_poster_width">105dp</dimen>
 </resources>

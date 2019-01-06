@@ -10,7 +10,6 @@
         android:id="@+id/toolbar"
         android:layout_width="0dp"
         android:layout_height="?attr/actionBarSize"
-        app:title="@string/toolbar_favorites_title"
         app:titleTextAppearance="@style/ToolbarText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -21,11 +20,63 @@
         android:id="@+id/moviesRV"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layoutAnimation="@anim/layout_anim_fall_down"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintTop_toBottomOf="@id/sortMenuEL"
         app:layout_constraintBottom_toBottomOf="parent"
         style="@style/RecyclerView"/>
+
+    <include
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        layout="@layout/expandable_sort_menu" />
+
+    <android.support.constraint.Group
+        android:id="@+id/noFavoritesCG"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="noFavoritesIV, noFavoritesTV" />
+
+    <ImageView
+        android:id="@+id/noFavoritesIV"
+        android:layout_width="85dp"
+        android:layout_height="85dp"
+        android:contentDescription="No favorites icon"
+        android:alpha="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:srcCompat="@drawable/ic_favorites_list_empty" />
+
+    <TextView
+        android:id="@+id/noFavoritesTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:alpha="0.5"
+        android:text="No favorites"
+        android:textSize="21sp"
+        android:textColor="@android:color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/noFavoritesIV" />
+
+    <ProgressBar
+        android:id="@+id/loadingPB"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

@@ -2,16 +2,15 @@ package com.academy.fundamentals.mymovies.Screens.MainMoviesList.MvpViews;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.academy.fundamentals.mymovies.Adapters.MoviesRecyclerAdapter;
 import com.academy.fundamentals.mymovies.Models.Movie;
@@ -35,10 +34,13 @@ public class MainMoviesListFragmentViewImpl implements MainMoviesListFragmentVie
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.moviesRV) RecyclerView moviesRV;
+    @BindView(R.id.loadingPB) ProgressBar loadingPB;
 
     public MainMoviesListFragmentViewImpl(LayoutInflater inflater, ViewGroup container) {
         mRootView = inflater.inflate(R.layout.fragment_main_movies_list, container, false);
         unbinder = ButterKnife.bind(this, mRootView);
+
+        loadingPB.setVisibility(View.VISIBLE);
 
         confToolbar();
         confMoviesList();
@@ -50,9 +52,12 @@ public class MainMoviesListFragmentViewImpl implements MainMoviesListFragmentVie
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                if (mListener != null)
-                    mListener.onFavoritesListClick();
+                if (mListener != null) {
+                    int itemId = item.getItemId();
 
+                    if (itemId == R.id.favoritesListItem)
+                        mListener.onFavoritesListClick();
+                }
                 return true;
             }
         });
@@ -81,10 +86,9 @@ public class MainMoviesListFragmentViewImpl implements MainMoviesListFragmentVie
     }
 
     @Override
-    public void onClick(int selectedMoviePos) {
-        if (mListener != null) {
+    public void onMovieClick(int selectedMoviePos) {
+        if (mListener != null)
             mListener.onMovieClick(selectedMoviePos);
-        }
     }
 
     @Override
@@ -94,8 +98,12 @@ public class MainMoviesListFragmentViewImpl implements MainMoviesListFragmentVie
 
     @Override
     public void displayMovies(List<Movie> movies) {
+        loadingPB.setVisibility(View.GONE);
+
         if (mMoviesRecyclerAdapter == null) {
-            mMoviesRecyclerAdapter = new MoviesRecyclerAdapter(mRootView.getContext(), this, movies);
+            moviesRV.scheduleLayoutAnimation();
+
+            mMoviesRecyclerAdapter = new MoviesRecyclerAdapter(this, mRootView.getContext(), movies);
             moviesRV.setAdapter(mMoviesRecyclerAdapter);
         }
         else

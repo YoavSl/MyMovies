@@ -39,11 +39,16 @@ public class Movie implements Serializable, Comparable<Movie> {
 
     @SerializedName("release_date")
     @Expose
+
     private String releaseDate;
 
     @SerializedName("vote_average")
     @Expose
     private float rating;
+
+    @SerializedName("popularity")
+    @Expose
+    private float popularity;
 
     //Used for all get movies queries except for get movie by id
     @SerializedName("genre_ids")
@@ -117,6 +122,14 @@ public class Movie implements Serializable, Comparable<Movie> {
 
     public void setRating(float rating) {
         this.rating = rating;
+    }
+
+    public float getPopularity() {
+        return popularity;
+    }
+
+    public void setPopularity(float popularity) {
+        this.popularity = popularity;
     }
 
     public List<Integer> getGenreIds() {
