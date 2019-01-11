@@ -5,42 +5,34 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="15dp"
-    android:layout_marginEnd="15dp"
-    android:layout_marginTop="8dp"
-    android:layout_marginBottom="8dp"
-    app:cardCornerRadius="5dp"
-    app:cardElevation="2dp" >
+    android:layout_marginStart="@dimen/card_view_margin_horizontal"
+    android:layout_marginEnd="@dimen/card_view_margin_horizontal"
+    android:layout_marginTop="@dimen/card_view_margin_vertical"
+    android:layout_marginBottom="@dimen/card_view_margin_vertical"
+    style="@style/CardViewReview" >
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="10dp" >
+        android:padding="@dimen/constraint_layout_review_padding" >
 
-    <TextView
-        android:id="@+id/authorTV"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textSize="17sp"
-        android:textColor="@color/colorPrimaryDark"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/authorTV"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            style="@style/TextViewReviewCardAuthor" />
 
         <at.blogc.android.views.ExpandableTextView
             android:id="@+id/contentETV"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:alpha="0.7"
-            android:textSize="16sp"
-            android:textColor="@android:color/black"
-            android:maxLines="4"
-            android:ellipsize="end"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/authorTV"
-            app:animation_duration="750" />
+            style="@style/ExpandableTextViewReviewCardContent" />
 
     </android.support.constraint.ConstraintLayout>
 

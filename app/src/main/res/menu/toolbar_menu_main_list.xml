@@ -6,7 +6,7 @@
 
     <item
         android:id="@+id/favoritesListItem"
-        android:title="Favorites list"
+        android:title="@string/toolbar_menu_item_favorites"
         android:icon="@drawable/ic_favorites_list"
         app:showAsAction="ifRoom"/>
 </menu>

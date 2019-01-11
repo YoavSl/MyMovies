@@ -2,7 +2,7 @@
 
 <set
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:duration="550">
+    android:duration="@integer/animation_duration_loading_cards">
 
     <translate
         android:fromYDelta="-20%"

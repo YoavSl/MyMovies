@@ -36,6 +36,17 @@
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         layout="@layout/expandable_sort_menu" />
 
+    <ProgressBar
+        android:id="@+id/loadingListPB"
+        android:layout_width="@dimen/progress_bar_loading_list_size"
+        android:layout_height="@dimen/progress_bar_loading_list_size"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        style="@style/ProgressBarLoadingMovies" />
+
     <android.support.constraint.Group
         android:id="@+id/noFavoritesCG"
         android:layout_width="wrap_content"
@@ -45,38 +56,25 @@
 
     <ImageView
         android:id="@+id/noFavoritesIV"
-        android:layout_width="85dp"
-        android:layout_height="85dp"
-        android:contentDescription="No favorites icon"
-        android:alpha="0.5"
+        android:layout_width="@dimen/image_view_no_favorites_size"
+        android:layout_height="@dimen/image_view_no_favorites_size"
+        android:contentDescription="@string/image_view_description_no_favorites"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:srcCompat="@drawable/ic_favorites_list_empty" />
+        app:srcCompat="@drawable/ic_favorites_list_empty"
+        style="@style/ViewNoFavorites" />
 
     <TextView
         android:id="@+id/noFavoritesTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:alpha="0.5"
-        android:text="No favorites"
-        android:textSize="21sp"
-        android:textColor="@android:color/black"
+        android:layout_marginTop="@dimen/text_view_no_favorites_margin_top"
+        android:text="@string/text_view_no_favorites"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/noFavoritesIV" />
-
-    <ProgressBar
-        android:id="@+id/loadingPB"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:indeterminate="true"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/noFavoritesIV"
+        style="@style/TextViewNoFavorites" />
 
 </android.support.constraint.ConstraintLayout>

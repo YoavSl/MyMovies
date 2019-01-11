@@ -1,11 +1,22 @@
 <resources>
-    <string name="app_name">My.Movies</string>
-    <string name="title_activity_main">M y . M o v i e s</string>
     <string name="api_key_tmdb">e46fac10656466cafbc9ee4d988cdcb1</string>
-    <string name="movies_category_popular">Popular</string>
-    <string name="movies_category_top_rated">Top Rated</string>
-    <string name="movies_category_upcoming">Upcoming</string>
-    <string name="toolbar_favorites_title_empty">F a v o r i t e s</string>
-    <string name="toolbar_favorites_title_not_empty">F a v o r i t e s \ ( %1$d )</string>
+    <string name="app_name">My.Movies</string>
     <string name="image_view_description_movie_poster">Movie poster</string>
+    <string name="image_view_description_movie_backdrop">Movie backdrop</string>
+    <string name="image_view_description_category_poster_popular">Popular category poster</string>
+    <string name="image_view_description_movie_rating">Movie rating icon</string>
+    <string name="image_view_description_trailer_thumbnail">Trailer thumbnail</string>
+    <string name="image_view_description_no_favorites">No favorites icon</string>
+    <string name="image_view_description_sorting_direction">Sorting direction</string>
+    <string name="text_view_no_favorites">No favorites</string>
+    <string name="text_view_no_reviews">This movie hasn\'t been reviewed yet.</string>
+    <string name="text_view_overview_label">Overview</string>
+    <string name="text_view_trailers_label">Trailers</string>
+    <string name="text_view_reviews_label">Reviews</string>
+    <string name="toolbar_title_activity_main">M y . M o v i e s</string>
+    <string name="toolbar_title_favorites_empty">F a v o r i t e s</string>
+    <string name="toolbar_title_favorites_not_empty">F a v o r i t e s \ ( %1$d )</string>
+    <string name="toolbar_menu_item_favorites">Favorites</string>
+    <string name="toolbar_menu_item_sort">Sort</string>
+
 </resources>

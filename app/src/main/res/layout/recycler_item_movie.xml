@@ -4,13 +4,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="108dp"
-    android:layout_marginStart="15dp"
-    android:layout_marginEnd="15dp"
-    android:layout_marginTop="8dp"
-    android:layout_marginBottom="8dp"
-    app:cardCornerRadius="5dp"
-    app:cardElevation="4dp" >
+    android:layout_height="@dimen/card_view_movie_height"
+    android:layout_marginStart="@dimen/card_view_margin_horizontal"
+    android:layout_marginEnd="@dimen/card_view_margin_horizontal"
+    android:layout_marginTop="@dimen/card_view_margin_vertical"
+    android:layout_marginBottom="@dimen/card_view_margin_vertical"
+    style="@style/CardViewStyle" >
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -28,46 +27,41 @@
 
         <android.support.design.chip.Chip
             android:id="@+id/releaseDateCP"
-            android:layout_width="@dimen/chip_main_list_release_date_width"
-            android:layout_height="@dimen/chip_main_list_release_date_height"
-            android:layout_marginStart="@dimen/chip_main_list_release_date_margin_start"
-            android:layout_marginTop="@dimen/chip_main_list_release_date_margin_top"
-            android:alpha="0.8"
+            android:layout_width="@dimen/chip_movie_card_release_date_width"
+            android:layout_height="@dimen/chip_movie_card_release_date_height"
+            android:layout_marginStart="@dimen/chip_movie_card_release_date_margin_start"
+            android:layout_marginTop="@dimen/chip_movie_card_release_date_margin_top"
             android:textAppearance="@style/ChipTextReleaseDateMainList"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            style="@style/ChipReleaseDateMainList" />
 
         <TextView
             android:id="@+id/titleTV"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="7sp"
-            android:layout_marginStart="7sp"
-            android:layout_marginEnd="10sp"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="@color/colorPrimary"
-            android:ellipsize="end"
-            android:maxLines="2"
+            android:layout_marginStart="@dimen/text_view_movie_card_title_margin_start"
+            android:layout_marginEnd="@dimen/text_view_movie_card_title_margin_end"
+            android:layout_marginTop="@dimen/text_view_movie_card_title_margin_top"
             app:layout_constraintStart_toEndOf="@id/posterIV"
             app:layout_constraintEnd_toStartOf="@id/ratingTV"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            style="@style/TextViewMovieCardTitle" />
 
         <TextView
             android:id="@+id/ratingTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:textColor="@color/colorPrimaryDark"
             app:layout_constraintEnd_toStartOf="@id/ratingIV"
-            app:layout_constraintBottom_toBottomOf="@id/ratingIV" />
+            app:layout_constraintBottom_toBottomOf="@id/ratingIV"
+            style="@style/TextViewMovieCardRating" />
 
         <ImageView
             android:id="@+id/ratingIV"
-            android:layout_width="17dp"
-            android:layout_height="17dp"
-            android:layout_marginEnd="7sp"
-            android:contentDescription="Rating icon"
+            android:layout_width="@dimen/image_view_movie_card_rating_size"
+            android:layout_height="@dimen/image_view_movie_card_rating_size"
+            android:layout_marginEnd="@dimen/image_view_movie_card_rating_margin_end"
+            android:contentDescription="@string/image_view_description_movie_rating"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/titleTV"
             app:srcCompat="@drawable/ic_rating" />
@@ -76,18 +70,15 @@
             android:id="@+id/overviewTV"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginStart="7sp"
-            android:layout_marginEnd="7sp"
-            android:layout_marginTop="4sp"
-            android:layout_marginBottom="7dp"
-            android:textSize="13sp"
-            android:textColor="@android:color/black"
-            android:ellipsize="end"
-            android:maxLines="4"
+            android:layout_marginStart="@dimen/text_view_movie_card_overview_margin_horizontal"
+            android:layout_marginEnd="@dimen/text_view_movie_card_overview_margin_horizontal"
+            android:layout_marginTop="@dimen/text_view_movie_card_overview_margin_top"
+            android:layout_marginBottom="@dimen/text_view_movie_card_overview_margin_bottom"
             app:layout_constraintStart_toEndOf="@id/posterIV"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/titleTV"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            style="@style/TextViewMovieCardOverview" />
 
         <View
             android:id="@+id/inFavoritesVW"

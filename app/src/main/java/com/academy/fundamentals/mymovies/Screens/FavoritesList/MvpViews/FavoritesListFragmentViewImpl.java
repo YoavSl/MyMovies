@@ -43,7 +43,7 @@ public class FavoritesListFragmentViewImpl implements FavoritesListFragmentView,
     @BindView(R.id.sortModesRV) RecyclerView sortModesRV;
     @BindView(R.id.moviesRV) RecyclerView moviesRV;
     @BindView(R.id.noFavoritesCG) Group noFavoritesCG;
-    @BindView(R.id.loadingPB) ProgressBar loadingPB;
+    @BindView(R.id.loadingListPB) ProgressBar loadingPB;
 
     public FavoritesListFragmentViewImpl(LayoutInflater inflater, ViewGroup container) {
         mRootView = inflater.inflate(R.layout.fragment_favorites_list, container, false);
@@ -148,10 +148,10 @@ public class FavoritesListFragmentViewImpl implements FavoritesListFragmentView,
     public void displayMoviesCount(int moviesCount) {
         if (moviesCount > 0)
             toolbar.setTitle(mRootView.getContext().getString(
-                    R.string.toolbar_favorites_title_not_empty, moviesCount));
+                    R.string.toolbar_title_favorites_not_empty, moviesCount));
         else
             toolbar.setTitle(mRootView.getContext().getString(
-                    R.string.toolbar_favorites_title_empty));
+                    R.string.toolbar_title_favorites_empty));
     }
 
     @Override

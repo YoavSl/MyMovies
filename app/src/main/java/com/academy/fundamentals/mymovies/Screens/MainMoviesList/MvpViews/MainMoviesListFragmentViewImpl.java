@@ -34,7 +34,7 @@ public class MainMoviesListFragmentViewImpl implements MainMoviesListFragmentVie
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.moviesRV) RecyclerView moviesRV;
-    @BindView(R.id.loadingPB) ProgressBar loadingPB;
+    @BindView(R.id.loadingListPB) ProgressBar loadingPB;
 
     public MainMoviesListFragmentViewImpl(LayoutInflater inflater, ViewGroup container) {
         mRootView = inflater.inflate(R.layout.fragment_main_movies_list, container, false);
