@@ -17,6 +17,7 @@ import com.academy.fundamentals.mymovies.HelperClasses.SortMovies;
 import com.academy.fundamentals.mymovies.Models.Genre;
 import com.academy.fundamentals.mymovies.Models.Movie;
 import com.academy.fundamentals.mymovies.Models.SortType;
+import com.academy.fundamentals.mymovies.R;
 import com.academy.fundamentals.mymovies.Repositories.FavoritesRepository;
 import com.academy.fundamentals.mymovies.Repositories.MoviesRepository;
 import com.academy.fundamentals.mymovies.Screens.Common.Presenters.BaseFragment;
@@ -51,10 +52,17 @@ public class FavoritesListFragment extends BaseFragment implements
         favoritesRepository = FavoritesRepository.getInstance(inflater.getContext());
         moviesRepository = MoviesRepository.getInstance();
 
-        if (moviesRepository.getGenres() == null)
-            getGenres();
-        else
-            getMovieIds();
+        /* Start the "get's" operations only after the fragment switch animation has finished
+           in order to avoid stutters in the UI */
+        mViewMvp.getRootView().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (moviesRepository.getGenres() == null)
+                    getGenres();
+                else
+                    getMovieIds();
+            }
+        }, inflater.getContext().getResources().getInteger(R.integer.animation_duration_switching_fragment));
 
         return mViewMvp.getRootView();
     }

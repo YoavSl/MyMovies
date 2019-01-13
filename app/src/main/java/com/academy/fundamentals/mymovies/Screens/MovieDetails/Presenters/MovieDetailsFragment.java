@@ -39,7 +39,7 @@ public class MovieDetailsFragment extends BaseFragment implements
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Bundle args = getArguments();
-        if ((args != null) && (args.containsKey(ARG_MOVIE))) {
+        if ((args != null) && (args.containsKey(ARG_MOVIE)) && (args.containsKey(ARG_GENRES))) {
             movie = (Movie) args.getSerializable(ARG_MOVIE);
             genres = (List<Genre>) args.getSerializable(ARG_GENRES);
         }

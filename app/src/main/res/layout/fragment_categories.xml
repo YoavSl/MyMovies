@@ -17,37 +17,6 @@
         app:titleTextAppearance="@style/ToolbarText"
         style="@style/Toolbar" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/moviesRV"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layoutAnimation="@anim/layout_anim_fall_down"
-        android:visibility="gone"
-        android:orientation="vertical"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:layout_constraintBottom_toBottomOf="parent"
-        style="@style/RecyclerView" />
-
-    <ProgressBar
-        android:id="@+id/loadingListPB"
-        android:layout_width="@dimen/progress_bar_loading_list_size"
-        android:layout_height="@dimen/progress_bar_loading_list_size"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        style="@style/ProgressBarLoadingMovies" />
-
-    <android.support.constraint.Group
-        android:id="@+id/categoriesCG"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:constraint_referenced_ids="mostPopularCategoryCV, nowPlayingCategoryCV,
-            upcomingCategoryCV, topRatedCategoryCV" />
-
     <include
         android:id="@+id/mostPopularCategoryCV"
         android:layout_width="0dp"

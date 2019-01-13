@@ -49,13 +49,13 @@ public class MoviesRepository {
         return repository;
     }
 
-    public void getPopularMovies(int page, Context context, final OnGetMoviesCallback callback) {
-        api.getMoviesByCategory("popular",
+    public void getMoviesByCategory(String apiCategoryName, int page,
+                                    Context context, final OnGetMoviesCallback callback) {
+        api.getMoviesByCategory(apiCategoryName,
                 context.getString(R.string.api_key_tmdb), LANGUAGE, page)
                 .enqueue(new Callback<MoviesResponse>() {
                     @Override
                     public void onResponse(@NonNull Call<MoviesResponse> call, @NonNull Response<MoviesResponse> response) {
-                        //progressDoalog.dismiss();
                         if (response.isSuccessful()) {
                             MoviesResponse moviesResponse = response.body();
 
@@ -70,7 +70,6 @@ public class MoviesRepository {
 
                     @Override
                     public void onFailure(@NonNull Call<MoviesResponse> call, @NonNull Throwable t) {
-                        //progressDoalog.dismiss();
                         callback.onError();
                     }
                 });

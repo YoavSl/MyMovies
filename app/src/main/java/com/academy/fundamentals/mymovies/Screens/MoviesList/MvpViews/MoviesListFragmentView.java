@@ -1,15 +1,16 @@
-package com.academy.fundamentals.mymovies.Screens.MainMoviesList.MvpViews;
+package com.academy.fundamentals.mymovies.Screens.MoviesList.MvpViews;
 
 import com.academy.fundamentals.mymovies.Models.Movie;
-import com.academy.fundamentals.mymovies.Models.SortType;
 import com.academy.fundamentals.mymovies.Screens.Common.MvpViews.ViewMvp;
 
 import java.util.List;
 
 
-public interface MainMoviesListFragmentView extends ViewMvp {
+public interface MoviesListFragmentView extends ViewMvp {
 
-    interface MainMoviesListFragmentViewListener {
+    interface MoviesListFragmentViewListener {
+        void onCategoriesListClick();
+
         void onFavoritesListClick();
 
         void onMovieClick(int selectedMoviePos);
@@ -17,7 +18,9 @@ public interface MainMoviesListFragmentView extends ViewMvp {
         void onListScroll();
     }
 
-    void setListener(MainMoviesListFragmentViewListener listener);
+    void setListener(MoviesListFragmentViewListener listener);
+
+    void setToolbarTitle(String category);
 
     void displayMovies(List<Movie> movies);
 

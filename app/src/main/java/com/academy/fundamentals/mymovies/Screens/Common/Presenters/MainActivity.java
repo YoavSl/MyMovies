@@ -6,8 +6,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
 import com.academy.fundamentals.mymovies.R;
+import com.academy.fundamentals.mymovies.Screens.CategoriesList.Presenters.CategoriesFragment;
 import com.academy.fundamentals.mymovies.Screens.Common.MvpViews.RootViewMvpImpl;
-import com.academy.fundamentals.mymovies.Screens.MainMoviesList.Presenters.MainMoviesListFragment;
+import com.academy.fundamentals.mymovies.Screens.FavoritesList.Presenters.FavoritesListFragment;
 import com.academy.fundamentals.mymovies.Screens.MoviesDetailsList.Presenters.MoviesDetailsListFragment;
 
 
@@ -23,7 +24,7 @@ public class MainActivity extends AppCompatActivity implements BaseFragment.Abst
 
         //Show the default fragment if the application is not restored
         if (savedInstanceState == null)
-            replaceFragment(MainMoviesListFragment.class, false, null);
+            replaceFragment(CategoriesFragment.class, false, null);
     }
 
     @Override
@@ -31,7 +32,6 @@ public class MainActivity extends AppCompatActivity implements BaseFragment.Abst
         Fragment newFragment;
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.setCustomAnimations(R.anim.anim_slide_in_left, R.anim.anim_slide_out_left, R.anim.anim_slide_in_right, R.anim.anim_slide_out_right);
 
         try {
             newFragment = claz.newInstance();
@@ -47,14 +47,10 @@ public class MainActivity extends AppCompatActivity implements BaseFragment.Abst
         if (addToBackStack)
             ft.addToBackStack(null);
 
-        /*if (newFragment instanceof MoviesDetailsListFragment) {
-            ft.add(R.id.fragmentContainerFL, newFragment, claz.getClass().getSimpleName());
-            ft.hide(getSupportFragmentManager().findFragmentById(R.id.fragmentContainerFL));
-        }
-        else
-            ft.replace(R.id.fragmentContainerFL, newFragment, claz.getClass().getSimpleName());*/
+        if (!(newFragment instanceof CategoriesFragment))
+            ft.setCustomAnimations(R.anim.anim_slide_in_left, R.anim.anim_slide_out_left, R.anim.anim_slide_in_right, R.anim.anim_slide_out_right);
 
-        if (!(newFragment instanceof MainMoviesListFragment)) {
+        if ((newFragment instanceof FavoritesListFragment) || (newFragment instanceof MoviesDetailsListFragment)) {
             ft.add(R.id.fragmentContainerFL, newFragment, claz.getClass().getSimpleName());
             ft.hide(getSupportFragmentManager().findFragmentById(R.id.fragmentContainerFL));
         }

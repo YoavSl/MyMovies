@@ -9,19 +9,37 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="@dimen/card_view_category_height" >
+
+        <ImageView
+            android:id="@+id/categoryIV"
+            android:layout_width="@dimen/image_view_category_card_image_width"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/image_view_description_category_top_rated"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:srcCompat="@drawable/ic_category_top_rated"
+            style="@style/ImageViewCategory" />
+
+        <View
+            android:id="@+id/maskVW"
+            android:layout_width="@dimen/view_category_card_mask_width"
+            android:layout_height="match_parent"
+            android:background="@drawable/background_category_mask"
+            app:layout_constraintEnd_toEndOf="@id/categoryIV"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
         <TextView
             android:id="@+id/titleTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Top Rated"
-            android:textSize="28sp"
-            android:textColor="@color/colorPrimary"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:text="@string/category_top_rated"
+            app:layout_constraintStart_toEndOf="@id/categoryIV"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            style="@style/TextViewCategoryCardTitle" />
 
     </android.support.constraint.ConstraintLayout>
 

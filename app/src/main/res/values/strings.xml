@@ -1,9 +1,20 @@
 <resources>
-    <string name="api_key_tmdb">e46fac10656466cafbc9ee4d988cdcb1</string>
     <string name="app_name">My.Movies</string>
+    <string name="api_key_tmdb">e46fac10656466cafbc9ee4d988cdcb1</string>
+    <string name="api_category_popular">popular</string>
+    <string name="api_category_now_playing">now_playing</string>
+    <string name="api_category_upcoming">upcoming</string>
+    <string name="api_category_top_rated">top_rated</string>
+    <string name="category_popular">M o s t \u0020 p o p u l a r</string>
+    <string name="category_now_playing">N o w \u0020 p l a y i n g</string>
+    <string name="category_upcoming">U p c o m i n g</string>
+    <string name="category_top_rated">T o p \u0020 r a t e d</string>
     <string name="image_view_description_movie_poster">Movie poster</string>
     <string name="image_view_description_movie_backdrop">Movie backdrop</string>
-    <string name="image_view_description_category_poster_popular">Popular category poster</string>
+    <string name="image_view_description_category_most_popular">Most popular category image</string>
+    <string name="image_view_description_category_now_playing">Now playing category image</string>
+    <string name="image_view_description_category_upcoming">Upcoming category image</string>
+    <string name="image_view_description_category_top_rated">Top rated category image</string>
     <string name="image_view_description_movie_rating">Movie rating icon</string>
     <string name="image_view_description_trailer_thumbnail">Trailer thumbnail</string>
     <string name="image_view_description_no_favorites">No favorites icon</string>
@@ -17,6 +28,7 @@
     <string name="toolbar_title_favorites_empty">F a v o r i t e s</string>
     <string name="toolbar_title_favorites_not_empty">F a v o r i t e s \ ( %1$d )</string>
     <string name="toolbar_menu_item_favorites">Favorites</string>
+    <string name="toolbar_menu_item_categories">Categories</string>
     <string name="toolbar_menu_item_sort">Sort</string>
 
 </resources>

@@ -1,4 +1,4 @@
-package com.academy.fundamentals.mymovies.Screens.MainMoviesList.MvpViews;
+package com.academy.fundamentals.mymovies.Screens.MoviesList.MvpViews;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -23,21 +23,21 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 
-public class MainMoviesListFragmentViewImpl implements MainMoviesListFragmentView,
+public class MoviesListFragmentViewImpl implements MoviesListFragmentView,
         MoviesRecyclerAdapter.MoviesAdapterOnClickHandler {
-    private static final String TAG = "MainMovListFtViewImpl";
+    private static final String TAG = "MoviesListFtViewImpl";
 
     private View mRootView;
     private Unbinder unbinder;
-    private MainMoviesListFragmentViewListener mListener;
+    private MoviesListFragmentViewListener mListener;
     private MoviesRecyclerAdapter mMoviesRecyclerAdapter;
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.moviesRV) RecyclerView moviesRV;
     @BindView(R.id.loadingListPB) ProgressBar loadingPB;
 
-    public MainMoviesListFragmentViewImpl(LayoutInflater inflater, ViewGroup container) {
-        mRootView = inflater.inflate(R.layout.fragment_main_movies_list, container, false);
+    public MoviesListFragmentViewImpl(LayoutInflater inflater, ViewGroup container) {
+        mRootView = inflater.inflate(R.layout.fragment_movies_list, container, false);
         unbinder = ButterKnife.bind(this, mRootView);
 
         loadingPB.setVisibility(View.VISIBLE);
@@ -46,8 +46,13 @@ public class MainMoviesListFragmentViewImpl implements MainMoviesListFragmentVie
         confMoviesList();
     }
 
+    @Override
+    public void setToolbarTitle(String category) {
+        toolbar.setTitle(category);
+    }
+
     private void confToolbar() {
-        toolbar.inflateMenu(R.menu.toolbar_menu_main_list);
+        toolbar.inflateMenu(R.menu.toolbar_menu_movies_list);
 
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
@@ -55,7 +60,9 @@ public class MainMoviesListFragmentViewImpl implements MainMoviesListFragmentVie
                 if (mListener != null) {
                     int itemId = item.getItemId();
 
-                    if (itemId == R.id.favoritesListItem)
+                    if (itemId == R.id.categoriesItem)
+                        mListener.onCategoriesListClick();
+                    else if (itemId == R.id.favoritesListItem)
                         mListener.onFavoritesListClick();
                 }
                 return true;
@@ -92,7 +99,7 @@ public class MainMoviesListFragmentViewImpl implements MainMoviesListFragmentVie
     }
 
     @Override
-    public void setListener(MainMoviesListFragmentViewListener listener) {
+    public void setListener(MoviesListFragmentViewListener listener) {
         mListener = listener;
     }
 

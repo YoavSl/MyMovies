@@ -1,4 +1,4 @@
-package com.academy.fundamentals.mymovies.Screens.MainMoviesList.Presenters;
+package com.academy.fundamentals.mymovies.Screens.MoviesList.Presenters;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -15,22 +15,27 @@ import com.academy.fundamentals.mymovies.Callbacks.OnGetGenresCallback;
 import com.academy.fundamentals.mymovies.Models.Genre;
 import com.academy.fundamentals.mymovies.Models.Movie;
 import com.academy.fundamentals.mymovies.Callbacks.OnGetMoviesCallback;
+import com.academy.fundamentals.mymovies.R;
 import com.academy.fundamentals.mymovies.Repositories.MoviesRepository;
 import com.academy.fundamentals.mymovies.Screens.Common.Presenters.BaseFragment;
 import com.academy.fundamentals.mymovies.Screens.FavoritesList.Presenters.FavoritesListFragment;
-import com.academy.fundamentals.mymovies.Screens.MainMoviesList.MvpViews.MainMoviesListFragmentViewImpl;
+import com.academy.fundamentals.mymovies.Screens.MoviesList.MvpViews.MoviesListFragmentViewImpl;
 import com.academy.fundamentals.mymovies.Screens.MoviesDetailsList.Presenters.MoviesDetailsListFragment;
-import com.academy.fundamentals.mymovies.Screens.MainMoviesList.MvpViews.MainMoviesListFragmentView;
+import com.academy.fundamentals.mymovies.Screens.MoviesList.MvpViews.MoviesListFragmentView;
 
 import java.io.Serializable;
 import java.util.List;
 
 
-public class MainMoviesListFragment extends BaseFragment implements
-        MainMoviesListFragmentView.MainMoviesListFragmentViewListener {
-    private static final String TAG = "MainMoviesListFragment";
+public class MoviesListFragment extends BaseFragment implements
+        MoviesListFragmentView.MoviesListFragmentViewListener {
+    private static final String TAG = "MoviesListFragment";
+    public static final String ARG_CATEGORY = "arg_category";
+    public static final String ARG_API_CATEGORY_NAME = "arg_api_category_name";
 
-    private MainMoviesListFragmentViewImpl mViewMvp;
+    private MoviesListFragmentViewImpl mViewMvp;
+    private String category;
+    private String apiCategoryName;
     private MoviesRepository moviesRepository;
     private List<Movie> currentMovies;
     private boolean isFetchingMovies;
@@ -39,15 +44,33 @@ public class MainMoviesListFragment extends BaseFragment implements
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mViewMvp = new MainMoviesListFragmentViewImpl(inflater, container);
+        Bundle args = getArguments();
+        if ((args != null) && (args.containsKey(ARG_CATEGORY)) &&
+                (args.containsKey(ARG_API_CATEGORY_NAME))) {
+            category = args.getString(ARG_CATEGORY);
+            apiCategoryName = args.getString(ARG_API_CATEGORY_NAME);
+        }
+        else
+            throw new IllegalStateException("MoviesListFragment must be started " +
+                    "with category and apiCategoryName strings");
+
+        mViewMvp = new MoviesListFragmentViewImpl(inflater, container);
         mViewMvp.setListener(this);
+        mViewMvp.setToolbarTitle(category);
 
         moviesRepository = MoviesRepository.getInstance();
 
-        if (moviesRepository.getGenres() == null)
-            getGenres();
-        else
-            getMovies(currentPage);
+        /* Start the "get's" operations only after the fragment switch animation has finished
+           in order to avoid stutters in the UI */
+        mViewMvp.getRootView().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (moviesRepository.getGenres() == null)
+                    getGenres();
+                else
+                    getMovies(currentPage);
+            }
+        }, inflater.getContext().getResources().getInteger(R.integer.animation_duration_switching_fragment));
 
         return mViewMvp.getRootView();
     }
@@ -69,18 +92,10 @@ public class MainMoviesListFragment extends BaseFragment implements
     private void getMovies(int page) {
         isFetchingMovies = true;
 
-        moviesRepository.getPopularMovies(page, getContext(), new OnGetMoviesCallback() {
+        moviesRepository.getMoviesByCategory(apiCategoryName, page, getContext(), new OnGetMoviesCallback() {
             @Override
             public void onSuccess(List<Movie> movies, int page) {
-                mViewMvp.displayMovies(movies);
-
-                if (currentMovies == null)
-                    currentMovies = movies;
-                else
-                    currentMovies.addAll(movies);
-
-                currentPage = page;
-                isFetchingMovies = false;
+                getMoviesSucceeded(movies, page);
             }
 
             @Override
@@ -88,6 +103,23 @@ public class MainMoviesListFragment extends BaseFragment implements
                 mViewMvp.getMoviesFailed();
             }
         });
+    }
+
+    private void getMoviesSucceeded(List<Movie> movies, int page) {
+        mViewMvp.displayMovies(movies);
+
+        if (currentMovies == null)
+            currentMovies = movies;
+        else
+            currentMovies.addAll(movies);
+
+        currentPage = page;
+        isFetchingMovies = false;
+    }
+
+    @Override
+    public void onCategoriesListClick() {
+        getActivity().getSupportFragmentManager().popBackStack();
     }
 
     @Override

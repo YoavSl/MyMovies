@@ -3,6 +3,7 @@
     <dimen name="card_view_margin_vertical">8dp</dimen>
     <dimen name="card_view_corner_radius">5dp</dimen>
     <dimen name="card_view_elevation">4dp</dimen>
+    <dimen name="card_view_category_height">108dp</dimen>
     <dimen name="card_view_movie_height">108dp</dimen>
     <dimen name="card_view_review_elevation">2dp</dimen>
     <dimen name="chip_movie_card_release_date_width">50dp</dimen>
@@ -26,6 +27,7 @@
     <dimen name="fab_margins">16dp</dimen>
     <dimen name="horizontal_scroll_view_movie_trailers_container_margin_horizontal">15dp</dimen>
     <dimen name="horizontal_scroll_view_movie_trailers_container_margin_top">8dp</dimen>
+    <dimen name="image_view_category_card_image_width">130dp</dimen>
     <dimen name="image_view_movie_card_poster_width">105dp</dimen>
     <dimen name="image_view_movie_card_rating_size">17dp</dimen>
     <dimen name="image_view_movie_card_rating_margin_end">7dp</dimen>
@@ -36,6 +38,8 @@
     <dimen name="rating_bar_movie_margin_start">15dp</dimen>
     <dimen name="rating_bar_movie_margin_top">12dp</dimen>
     <dimen name="recycler_view_reviews_margin_bottom">8dp</dimen>
+    <dimen name="text_view_category_card_title_margin_start">15dp</dimen>
+    <dimen name="text_view_category_card_title_text_size">20sp</dimen>
     <dimen name="text_view_movie_card_title_margin_start">7dp</dimen>
     <dimen name="text_view_movie_card_title_margin_end">10dp</dimen>
     <dimen name="text_view_movie_card_title_margin_top">7dp</dimen>
@@ -62,6 +66,7 @@
     <dimen name="text_view_no_reviews_margin_bottom">16dp</dimen>
     <dimen name="text_view_no_reviews_text_size">16sp</dimen>
     <dimen name="toolbar_text_size">18sp</dimen>
+    <dimen name="view_category_card_mask_width">30dp</dimen>
     <dimen name="view_movie_card_in_favorites_width">2.3dp</dimen>
 
 </resources>

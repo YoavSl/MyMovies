@@ -8,8 +8,8 @@ android {
         applicationId "com.academy.fundamentals.mymovies"
         minSdkVersion 17
         targetSdkVersion 28
-        versionCode 20181129
-        versionName "1.0.0"
+        versionCode 20190113
+        versionName "1.2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
