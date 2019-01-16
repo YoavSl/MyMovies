@@ -26,42 +26,44 @@ import butterknife.ButterKnife;
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
 
-public class MoviesRecyclerAdapter extends
-        RecyclerView.Adapter<MoviesRecyclerAdapter.MoviesRecyclerAdapterViewHolder> {
+public class FavoriteMoviesRecyclerAdapter extends
+        RecyclerView.Adapter<FavoriteMoviesRecyclerAdapter.FavoriteMoviesRecyclerAdapterViewHolder> {
     private final static String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/w500";
 
-    private final MoviesAdapterOnClickHandler mClickHandler;
+    private final FavoriteMoviesAdapterOnClickHandler mClickHandler;
     private FavoritesRepository favoritesRepository;
     private List<Movie> movies;
-    private AlphaAnimation fadeInAnim, fadeOutAnim;
 
-    public interface MoviesAdapterOnClickHandler {
+    public interface FavoriteMoviesAdapterOnClickHandler {
         void onMovieClick(int selectedMoviePos);
+
+        void onMovieLongClick(int selectedMoviePos);
     }
 
-    public MoviesRecyclerAdapter(MoviesAdapterOnClickHandler clickHandler, Context context, List<Movie> movies) {
+    public FavoriteMoviesRecyclerAdapter(FavoriteMoviesAdapterOnClickHandler clickHandler,
+                                         Context context, List<Movie> movies) {
         mClickHandler = clickHandler;
         favoritesRepository = FavoritesRepository.getInstance(context);
 
         this.movies = new ArrayList<>(movies);
-
-        confInFavoritesAnimations(context);
     }
 
     @NonNull
     @Override
-    public MoviesRecyclerAdapterViewHolder onCreateViewHolder(@NonNull  ViewGroup parent, int viewType) {
+    public FavoriteMoviesRecyclerAdapterViewHolder onCreateViewHolder(@NonNull  ViewGroup parent, int viewType) {
         int layoutId = R.layout.recycler_item_movie;
 
         LayoutInflater mInflater = LayoutInflater.from(parent.getContext());
         View view = mInflater.inflate(layoutId, parent, false);
 
-        return new MoviesRecyclerAdapterViewHolder(view);
+        return new FavoriteMoviesRecyclerAdapterViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MoviesRecyclerAdapterViewHolder moviesRecyclerAdapterViewHolder, int position) {
-        moviesRecyclerAdapterViewHolder.bind(movies.get(position));
+    public void onBindViewHolder(
+            @NonNull FavoriteMoviesRecyclerAdapterViewHolder favoriteMoviesRecyclerAdapterViewHolder,
+            int position) {
+        favoriteMoviesRecyclerAdapterViewHolder.bind(movies.get(position));
     }
 
     @Override
@@ -69,13 +71,18 @@ public class MoviesRecyclerAdapter extends
         return movies.size();
     }
 
-    public void appendMovies(List<Movie> moviesToAppend) {
-        movies.addAll(moviesToAppend);
+    public void updateMoviesOrder(List<Movie> movies) {
+        this.movies = movies;
         notifyDataSetChanged();
     }
 
-    class MoviesRecyclerAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
-            View.OnLongClickListener {
+    public void removeMovie(int pos) {
+        movies.remove(pos);
+        notifyItemRemoved(pos);
+    }
+
+    class FavoriteMoviesRecyclerAdapterViewHolder extends RecyclerView.ViewHolder implements
+            View.OnClickListener, View.OnLongClickListener {
         @BindView(R.id.posterIV) ImageView posterIV;
         @BindView(R.id.releaseDateCP) Chip releaseDateCP;
         @BindView(R.id.titleTV) TextView titleTV;
@@ -83,7 +90,7 @@ public class MoviesRecyclerAdapter extends
         @BindView(R.id.overviewTV) TextView overviewTV;
         @BindView(R.id.inFavoritesVW) View inFavoritesVW;
 
-        private MoviesRecyclerAdapterViewHolder(View itemView) {
+        private FavoriteMoviesRecyclerAdapterViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
 
@@ -92,21 +99,23 @@ public class MoviesRecyclerAdapter extends
         }
 
         private void bind(final Movie movie) {
+            if (!favoritesRepository.checkIfExists(movie.getId())) {
+                removeMovie(getAdapterPosition());
+                return;
+            }
+
             releaseDateCP.setText(movie.getReleaseDate().split("-")[0]);   //Get only the year
             titleTV.setText(movie.getTitle());
             ratingTV.setText(String.valueOf(movie.getRating()));
             overviewTV.setText(movie.getOverview());
+
+            inFavoritesVW.setVisibility(View.VISIBLE);
 
             Glide.with(itemView)
                     .load(IMAGE_BASE_URL + movie.getPosterPath())
                     .transition(withCrossFade())
                     .apply(RequestOptions.placeholderOf(R.color.colorPrimary))
                     .into(posterIV);
-
-            if (favoritesRepository.checkIfExists(movie.getId()))
-                inFavoritesVW.setVisibility(View.VISIBLE);
-            else
-                inFavoritesVW.setVisibility(View.INVISIBLE);
 
             titleTV.post(new Runnable() {
                 @Override
@@ -127,30 +136,15 @@ public class MoviesRecyclerAdapter extends
 
         @Override
         public boolean onLongClick(View view) {
-            int currentMovieId = movies.get(getAdapterPosition()).getId();
+            int selectedMoviePos = getAdapterPosition();
+            int currentMovieId = movies.get(selectedMoviePos).getId();
 
-            if (favoritesRepository.checkIfExists(currentMovieId)) {
-                inFavoritesVW.startAnimation(fadeOutAnim);
-                favoritesRepository.removeItem(currentMovieId);
-            }
-            else {
-                inFavoritesVW.startAnimation(fadeInAnim);
-                favoritesRepository.addItem(currentMovieId);
-            }
+            removeMovie(selectedMoviePos);
+
+            mClickHandler.onMovieLongClick(selectedMoviePos);
+            favoritesRepository.removeItem(currentMovieId);
 
             return true;
         }
-    }
-
-    private void confInFavoritesAnimations(Context context){
-        fadeInAnim = new AlphaAnimation(0.0f , 1.0f );
-        fadeInAnim.setDuration(context.getResources().
-                getInteger(R.integer.animation_duration_view_in_favorites));
-        fadeInAnim.setFillAfter(true);
-
-        fadeOutAnim = new AlphaAnimation( 1.0f , 0.0f );
-        fadeOutAnim.setDuration(context.getResources().
-                getInteger(R.integer.animation_duration_view_in_favorites));
-        fadeOutAnim.setFillAfter(true);
     }
 }

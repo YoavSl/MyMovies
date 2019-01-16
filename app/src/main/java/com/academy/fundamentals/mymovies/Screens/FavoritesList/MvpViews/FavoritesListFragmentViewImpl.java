@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.academy.fundamentals.mymovies.Adapters.FavoriteMoviesRecyclerAdapter;
 import com.academy.fundamentals.mymovies.Adapters.MoviesRecyclerAdapter;
 import com.academy.fundamentals.mymovies.Adapters.SortModesRecyclerAdapter;
 import com.academy.fundamentals.mymovies.Models.Movie;
@@ -30,13 +31,13 @@ import butterknife.Unbinder;
 
 public class FavoritesListFragmentViewImpl implements FavoritesListFragmentView,
         SortModesRecyclerAdapter.SortModesAdapterOnClickHandler,
-        MoviesRecyclerAdapter.MoviesAdapterOnClickHandler {
+        FavoriteMoviesRecyclerAdapter.FavoriteMoviesAdapterOnClickHandler {
     private static final String TAG = "FavoritesListFtViewImpl";
 
     private View mRootView;
     private Unbinder unbinder;
     private FavoritesListFragmentViewListener mListener;
-    private MoviesRecyclerAdapter mMoviesRecyclerAdapter;
+    private FavoriteMoviesRecyclerAdapter mFavoriteMoviesRecyclerAdapter;
 
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.sortMenuEL) ExpandableLayout sortMenuEL;
@@ -104,6 +105,12 @@ public class FavoritesListFragmentViewImpl implements FavoritesListFragmentView,
     }
 
     @Override
+    public void onMovieLongClick(int selectedMoviePos) {
+        if (mListener != null)
+            mListener.onMovieLongClick(selectedMoviePos);
+    }
+
+    @Override
     public void setListener(FavoritesListFragmentViewListener listener) {
         mListener = listener;
     }
@@ -118,15 +125,8 @@ public class FavoritesListFragmentViewImpl implements FavoritesListFragmentView,
         loadingPB.setVisibility(View.GONE);
         moviesRV.scheduleLayoutAnimation();
 
-        mMoviesRecyclerAdapter = new MoviesRecyclerAdapter(this, mRootView.getContext(), movies);
-        moviesRV.setAdapter(mMoviesRecyclerAdapter);
-
-        onSortModeClick(FavoritesListFragment.DEFAULT_SORT_TYPE, FavoritesListFragment.DEFAULT_ASCENDING_SORT);
-    }
-
-    @Override
-    public void displayEmptyList() {
-        noFavoritesCG.setVisibility(View.VISIBLE);
+        mFavoriteMoviesRecyclerAdapter = new FavoriteMoviesRecyclerAdapter( this, mRootView.getContext(), movies);
+        moviesRV.setAdapter(mFavoriteMoviesRecyclerAdapter);
     }
 
     @Override
@@ -136,22 +136,29 @@ public class FavoritesListFragmentViewImpl implements FavoritesListFragmentView,
 
     @Override
     public void updateMoviesOrder(List<Movie> movies) {
-        mMoviesRecyclerAdapter.updateMoviesOrder(movies);
+        mFavoriteMoviesRecyclerAdapter.updateMoviesOrder(movies);
     }
 
     @Override
-    public void refreshList() {
-        mMoviesRecyclerAdapter.notifyDataSetChanged();
+    public void removeMovie(int pos) {
+        mFavoriteMoviesRecyclerAdapter.removeMovie(pos);
     }
 
     @Override
     public void displayMoviesCount(int moviesCount) {
-        if (moviesCount > 0)
-            toolbar.setTitle(mRootView.getContext().getString(
-                    R.string.toolbar_title_favorites_not_empty, moviesCount));
-        else
+        if (moviesCount == 0) {
             toolbar.setTitle(mRootView.getContext().getString(
                     R.string.toolbar_title_favorites_empty));
+
+            displayEmptyList();
+        }
+        else
+            toolbar.setTitle(mRootView.getContext().getString(
+                    R.string.toolbar_title_favorites_not_empty, moviesCount));
+    }
+
+    private void displayEmptyList() {
+        noFavoritesCG.setVisibility(View.VISIBLE);
     }
 
     @Override

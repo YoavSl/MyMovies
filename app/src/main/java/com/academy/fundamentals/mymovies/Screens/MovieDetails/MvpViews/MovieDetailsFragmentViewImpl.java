@@ -64,7 +64,6 @@ public class MovieDetailsFragmentViewImpl implements MovieDetailsFragmentView {
        unbinder = ButterKnife.bind(this, mRootView);
     }
 
-
     @OnClick(R.id.favoriteFAB)
     void OnClick(View view) {
         if (mListener != null) {

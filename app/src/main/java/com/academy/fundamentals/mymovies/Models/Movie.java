@@ -57,6 +57,7 @@ public class Movie implements Serializable, Comparable<Movie> {
 
     //Used only for get movie by id query
     @SerializedName("genres")
+
     @Expose
     private List<Genre> genres;
 

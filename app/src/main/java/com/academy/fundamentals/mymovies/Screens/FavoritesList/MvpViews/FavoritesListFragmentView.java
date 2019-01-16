@@ -13,7 +13,10 @@ public interface FavoritesListFragmentView extends ViewMvp {
         void onSortModeClick(SortType sortType, boolean ascendingSort);
 
         void onMovieClick(int selectedMoviePos);
+
+        void onMovieLongClick(int selectedMoviePos);
     }
+
     void setListener(FavoritesListFragmentViewListener listener);
 
     void setSortMenu();
@@ -22,13 +25,11 @@ public interface FavoritesListFragmentView extends ViewMvp {
 
     void displayMovies(List<Movie> movies);
 
-    void displayEmptyList();
-
     void getMovieFailed(int id);
 
     void updateMoviesOrder(List<Movie> movies);
 
-    void refreshList();
+    void removeMovie(int pos);
 
     void displayMoviesCount(int moviesCount);
 

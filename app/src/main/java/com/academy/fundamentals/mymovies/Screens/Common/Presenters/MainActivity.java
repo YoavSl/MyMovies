@@ -47,15 +47,21 @@ public class MainActivity extends AppCompatActivity implements BaseFragment.Abst
         if (addToBackStack)
             ft.addToBackStack(null);
 
-        if (!(newFragment instanceof CategoriesFragment))
+        if (newFragment instanceof MoviesDetailsListFragment)
+            ft.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, R.anim.anim_slide_in_right, R.anim.anim_slide_out_right);
+        else if (!(newFragment instanceof CategoriesFragment))
             ft.setCustomAnimations(R.anim.anim_slide_in_left, R.anim.anim_slide_out_left, R.anim.anim_slide_in_right, R.anim.anim_slide_out_right);
 
         if ((newFragment instanceof FavoritesListFragment) || (newFragment instanceof MoviesDetailsListFragment)) {
-            ft.add(R.id.fragmentContainerFL, newFragment, claz.getClass().getSimpleName());
-            ft.hide(getSupportFragmentManager().findFragmentById(R.id.fragmentContainerFL));
+            Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragmentContainerFL);
+
+            if (currentFragment != null) {
+                ft.hide(currentFragment);
+                ft.add(R.id.fragmentContainerFL, newFragment, claz.getSimpleName());
+            }
         }
         else
-            ft.replace(R.id.fragmentContainerFL, newFragment, claz.getClass().getSimpleName());
+            ft.replace(R.id.fragmentContainerFL, newFragment, claz.getSimpleName());
 
         ft.commit();
     }

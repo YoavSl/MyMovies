@@ -32,6 +32,7 @@ public class MoviesListFragment extends BaseFragment implements
     private static final String TAG = "MoviesListFragment";
     public static final String ARG_CATEGORY = "arg_category";
     public static final String ARG_API_CATEGORY_NAME = "arg_api_category_name";
+    public static final String ACTION_REFRESH_MOVIES_LIST = "action_refresh_movies_list";
 
     private MoviesListFragmentViewImpl mViewMvp;
     private String category;
@@ -40,6 +41,7 @@ public class MoviesListFragment extends BaseFragment implements
     private List<Movie> currentMovies;
     private boolean isFetchingMovies;
     private int currentPage = 1;
+    private IntentFilter refreshListFilter;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -55,8 +57,17 @@ public class MoviesListFragment extends BaseFragment implements
                     "with category and apiCategoryName strings");
 
         mViewMvp = new MoviesListFragmentViewImpl(inflater, container);
+
+        init(inflater.getContext());
+
+        return mViewMvp.getRootView();
+    }
+
+    private void init(Context context) {
         mViewMvp.setListener(this);
         mViewMvp.setToolbarTitle(category);
+
+        refreshListFilter = new IntentFilter(ACTION_REFRESH_MOVIES_LIST);
 
         moviesRepository = MoviesRepository.getInstance();
 
@@ -70,9 +81,8 @@ public class MoviesListFragment extends BaseFragment implements
                 else
                     getMovies(currentPage);
             }
-        }, inflater.getContext().getResources().getInteger(R.integer.animation_duration_switching_fragment));
-
-        return mViewMvp.getRootView();
+        }, context.getResources().
+                getInteger(R.integer.animation_duration_switching_fragment));
     }
 
     private void getGenres() {
@@ -133,6 +143,7 @@ public class MoviesListFragment extends BaseFragment implements
         bundle.putSerializable(MoviesDetailsListFragment.ARG_MOVIES, (Serializable) currentMovies);
         bundle.putSerializable(MoviesDetailsListFragment.ARG_GENRES, (Serializable) moviesRepository.getGenres());
         bundle.putInt(MoviesDetailsListFragment.ARG_SELECTED_MOVIE_POS, selectedMoviePos);
+        bundle.putBoolean(MoviesDetailsListFragment.ARG_IS_FAVORITES_ADAPTER, false);
 
         replaceFragment(MoviesDetailsListFragment.class, true, bundle);
     }
@@ -154,8 +165,6 @@ public class MoviesListFragment extends BaseFragment implements
     @Override
     public void onResume() {
         super.onResume();
-
-        IntentFilter refreshListFilter = new IntentFilter(MoviesDetailsListFragment.ACTION_REFRESH_LIST);
 
         LocalBroadcastManager.getInstance(mViewMvp.getRootView().getContext()).
                 registerReceiver(refreshListReceiver, refreshListFilter);

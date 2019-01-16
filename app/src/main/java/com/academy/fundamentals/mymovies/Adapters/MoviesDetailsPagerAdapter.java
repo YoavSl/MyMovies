@@ -1,9 +1,11 @@
 package com.academy.fundamentals.mymovies.Adapters;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
 
 import com.academy.fundamentals.mymovies.Models.Genre;
 import com.academy.fundamentals.mymovies.Models.Movie;
@@ -39,5 +41,16 @@ public class MoviesDetailsPagerAdapter extends FragmentStatePagerAdapter {
         movieDetailsFragment.setArguments(bundle);
 
         return movieDetailsFragment;
+    }
+
+    public void removeMovie(int pos) {
+        movies.remove(pos);
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public int getItemPosition(@NonNull Object object) {
+        // refresh all fragments when data set changed
+        return PagerAdapter.POSITION_NONE;
     }
 }

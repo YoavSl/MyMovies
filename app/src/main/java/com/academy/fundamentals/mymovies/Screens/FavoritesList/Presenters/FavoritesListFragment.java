@@ -30,47 +30,44 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import static com.academy.fundamentals.mymovies.Screens.MovieDetails.Presenters.MovieDetailsFragment.ARG_MOVIE_ID;
+import static com.academy.fundamentals.mymovies.Screens.MoviesList.Presenters.MoviesListFragment.ACTION_REFRESH_MOVIES_LIST;
+
 
 public class FavoritesListFragment extends BaseFragment implements
         FavoritesListFragmentView.FavoritesListFragmentViewListener {
     private static final String TAG = "FavoritesListFragment";
+    public static final String ACTION_REMOVE_FAVORITE_MOVIE = "action_remove_favorite_movie";
+
     public static SortType DEFAULT_SORT_TYPE = SortType.NAME;
     public static boolean DEFAULT_ASCENDING_SORT = true;
 
     private FavoritesListFragmentViewImpl mViewMvp;
-    private FavoritesRepository favoritesRepository;
     private MoviesRepository moviesRepository;
+    private FavoritesRepository favoritesRepository;
     private List<Movie> movies = new ArrayList<>();
+    private Set<String> movieIds;
     private int totalMoviesCounter, moviesLoadedCounter = 0;
+    private IntentFilter removeMovieFilter;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mViewMvp = new FavoritesListFragmentViewImpl(inflater, container);
-        mViewMvp.setListener(this);
-
-        favoritesRepository = FavoritesRepository.getInstance(inflater.getContext());
-        moviesRepository = MoviesRepository.getInstance();
-
-        /* Start the "get's" operations only after the fragment switch animation has finished
-           in order to avoid stutters in the UI */
-        mViewMvp.getRootView().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (moviesRepository.getGenres() == null)
-                    getGenres();
-                else
-                    getMovieIds();
-            }
-        }, inflater.getContext().getResources().getInteger(R.integer.animation_duration_switching_fragment));
+        init(inflater.getContext());
 
         return mViewMvp.getRootView();
     }
 
-    @Override
-    public void onSortModeClick(SortType sortType, boolean ascendingSort) {
-        movies = SortMovies.sortByType(movies, sortType, ascendingSort);
-        mViewMvp.updateMoviesOrder(movies);
+    private void init(Context context) {
+        mViewMvp.setListener(this);
+
+        removeMovieFilter = new IntentFilter(ACTION_REMOVE_FAVORITE_MOVIE);
+
+        moviesRepository = MoviesRepository.getInstance();
+        favoritesRepository = FavoritesRepository.getInstance(context);
+
+        getMovieIds();
     }
 
     private void getGenres() {
@@ -78,7 +75,7 @@ public class FavoritesListFragment extends BaseFragment implements
             @Override
             public void onSuccess(List<Genre> genresList) {
                 moviesRepository.setGenres(genresList);
-                getMovieIds();
+                getMovies();
             }
 
             @Override
@@ -88,18 +85,29 @@ public class FavoritesListFragment extends BaseFragment implements
     }
 
     private void getMovieIds() {
-        Set<String> movieIds = favoritesRepository.getItems();
+        movieIds = favoritesRepository.getItems();
         totalMoviesCounter = movieIds.size();
+
         mViewMvp.displayMoviesCount(totalMoviesCounter);
 
-        if (movieIds.isEmpty()) {
-            mViewMvp.displayEmptyList();
-            return;
+        if (totalMoviesCounter > 0) {
+            mViewMvp.displayLoadingAnimation();
+            mViewMvp.setSortMenu();
+
+            mViewMvp.getRootView().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (moviesRepository.getGenres() == null)
+                        getGenres();
+                    else
+                        getMovies();
+                }
+            }, mViewMvp.getRootView().getContext().
+                    getResources().getInteger(R.integer.animation_duration_switching_fragment));
         }
+    }
 
-        mViewMvp.setSortMenu();
-        mViewMvp.displayLoadingAnimation();
-
+    private void getMovies() {
         for(String movieId : movieIds)
             getMovie(Integer.parseInt(movieId));
     }
@@ -112,7 +120,7 @@ public class FavoritesListFragment extends BaseFragment implements
                 moviesLoadedCounter++;
 
                 if (moviesLoadedCounter == totalMoviesCounter)
-                    mViewMvp.displayMovies(movies);
+                    getMoviesFinished();
             }
 
             @Override
@@ -121,9 +129,14 @@ public class FavoritesListFragment extends BaseFragment implements
                 moviesLoadedCounter++;
 
                 if (moviesLoadedCounter == totalMoviesCounter)
-                    mViewMvp.displayMovies(movies);
+                    getMoviesFinished();
             }
         });
+    }
+
+    private void getMoviesFinished() {
+        sortMovies(FavoritesListFragment.DEFAULT_SORT_TYPE, FavoritesListFragment.DEFAULT_ASCENDING_SORT);
+        mViewMvp.displayMovies(movies);
     }
 
     @Override
@@ -132,14 +145,47 @@ public class FavoritesListFragment extends BaseFragment implements
         bundle.putSerializable(MoviesDetailsListFragment.ARG_MOVIES, (Serializable) movies);
         bundle.putSerializable(MoviesDetailsListFragment.ARG_GENRES, (Serializable) moviesRepository.getGenres());
         bundle.putInt(MoviesDetailsListFragment.ARG_SELECTED_MOVIE_POS, selectedMoviePos);
+        bundle.putInt(MoviesDetailsListFragment.ARG_SELECTED_MOVIE_POS, selectedMoviePos);
+        bundle.putBoolean(MoviesDetailsListFragment.ARG_IS_FAVORITES_ADAPTER, true);
 
         replaceFragment(MoviesDetailsListFragment.class, true, bundle);
     }
 
-    private BroadcastReceiver refreshListReceiver = new BroadcastReceiver() {
+    @Override
+    public void onMovieLongClick(int selectedMoviePos) {
+        reduceMoviesCount();
+        movies.remove(selectedMoviePos);
+    }
+
+    private void reduceMoviesCount() {
+        totalMoviesCounter--;
+        mViewMvp.displayMoviesCount(totalMoviesCounter);
+    }
+
+    @Override
+    public void onSortModeClick(SortType sortType, boolean ascendingSort) {
+        sortMovies(sortType, ascendingSort);
+        mViewMvp.updateMoviesOrder(movies);
+    }
+
+    public void sortMovies(SortType sortType, boolean ascendingSort) {
+        movies = SortMovies.sortByType(movies, sortType, ascendingSort);
+    }
+
+    private BroadcastReceiver removeMovieReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent ) {
-            mViewMvp.refreshList();
+            int movieId = intent.getIntExtra(ARG_MOVIE_ID, 0);
+
+            if (movieId != 0) {
+                for (int i = 0; i < movies.size(); i++)
+                    if (movies.get(i).getId() == movieId) {
+                        mViewMvp.removeMovie(i);
+                        reduceMoviesCount();
+
+                        return;
+                    }
+            }
         }
     };
 
@@ -147,10 +193,8 @@ public class FavoritesListFragment extends BaseFragment implements
     public void onResume() {
         super.onResume();
 
-        IntentFilter refreshListFilter = new IntentFilter(MoviesDetailsListFragment.ACTION_REFRESH_LIST);
-
         LocalBroadcastManager.getInstance(mViewMvp.getRootView().getContext()).
-                registerReceiver(refreshListReceiver, refreshListFilter);
+                registerReceiver(removeMovieReceiver, removeMovieFilter);
     }
 
     @Override
@@ -158,12 +202,15 @@ public class FavoritesListFragment extends BaseFragment implements
         super.onStop();
 
         LocalBroadcastManager.getInstance(mViewMvp.getRootView().getContext())
-                .unregisterReceiver(refreshListReceiver);
+                .unregisterReceiver(removeMovieReceiver);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+
         mViewMvp.unbindButterKnife();
+        LocalBroadcastManager.getInstance(mViewMvp.getRootView().getContext()).
+                sendBroadcast(new Intent(ACTION_REFRESH_MOVIES_LIST));
     }
 }
