@@ -47,8 +47,9 @@ public class FavoritesListFragment extends BaseFragment implements
     private FavoritesRepository favoritesRepository;
     private List<Movie> movies = new ArrayList<>();
     private Set<String> movieIds;
-    private int totalMoviesCounter, moviesLoadedCounter = 0;
+    private int totalMoviesCounter, moviesLoadedCounter = 0, moviesNotLoadedCounter = 0;
     private IntentFilter removeMovieFilter;
+    private boolean fragmentDestroyed;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -71,7 +72,7 @@ public class FavoritesListFragment extends BaseFragment implements
     }
 
     private void getGenres() {
-        moviesRepository.getGenres(getContext(), new OnGetGenresCallback() {
+        moviesRepository.getGenres(new OnGetGenresCallback() {
             @Override
             public void onSuccess(List<Genre> genresList) {
                 moviesRepository.setGenres(genresList);
@@ -88,10 +89,10 @@ public class FavoritesListFragment extends BaseFragment implements
         movieIds = favoritesRepository.getItems();
         totalMoviesCounter = movieIds.size();
 
-        mViewMvp.displayMoviesCount(totalMoviesCounter);
-
         if (totalMoviesCounter > 0) {
+            mViewMvp.displayMoviesCount(totalMoviesCounter);
             mViewMvp.displayLoadingAnimation();
+
             mViewMvp.setSortMenu();
 
             mViewMvp.getRootView().postDelayed(new Runnable() {
@@ -105,6 +106,8 @@ public class FavoritesListFragment extends BaseFragment implements
             }, mViewMvp.getRootView().getContext().
                     getResources().getInteger(R.integer.animation_duration_switching_fragment));
         }
+        else
+            mViewMvp.displayEmptyList(false);
     }
 
     private void getMovies() {
@@ -113,23 +116,36 @@ public class FavoritesListFragment extends BaseFragment implements
     }
 
     private void getMovie(final int movieId) {
-        moviesRepository.getMovie(movieId, getContext(), new OnGetMovieCallback() {
+        moviesRepository.getMovieById(movieId, new OnGetMovieCallback() {
             @Override
             public void onSuccess(Movie movie) {
-                movies.add(movie);
-                moviesLoadedCounter++;
+                if (!fragmentDestroyed) {
+                    movies.add(movie);
+                    moviesLoadedCounter++;
 
-                if (moviesLoadedCounter == totalMoviesCounter)
-                    getMoviesFinished();
+                    if (totalMoviesCounter == (moviesLoadedCounter + moviesNotLoadedCounter)) {
+                        if (totalMoviesCounter != moviesLoadedCounter)
+                            mViewMvp.getMoviesFailed(false);
+
+                        getMoviesFinished();
+                    }
+                }
             }
 
             @Override
             public void onError() {
-                mViewMvp.getMovieFailed(movieId);
-                moviesLoadedCounter++;
+                if (!fragmentDestroyed) {
+                    moviesNotLoadedCounter++;
 
-                if (moviesLoadedCounter == totalMoviesCounter)
-                    getMoviesFinished();
+                    if (totalMoviesCounter == (moviesLoadedCounter + moviesNotLoadedCounter)) {
+                        if (moviesLoadedCounter == 0)
+                            mViewMvp.getMoviesFailed(true);
+                        else {
+                            mViewMvp.getMoviesFailed(false);
+                            getMoviesFinished();
+                        }
+                    }
+                }
             }
         });
     }
@@ -208,8 +224,10 @@ public class FavoritesListFragment extends BaseFragment implements
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-
         mViewMvp.unbindButterKnife();
+
+        fragmentDestroyed = true;
+
         LocalBroadcastManager.getInstance(mViewMvp.getRootView().getContext()).
                 sendBroadcast(new Intent(ACTION_REFRESH_MOVIES_LIST));
     }

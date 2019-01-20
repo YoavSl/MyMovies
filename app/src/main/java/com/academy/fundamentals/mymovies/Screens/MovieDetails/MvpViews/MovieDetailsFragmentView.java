@@ -25,6 +25,10 @@ public interface MovieDetailsFragmentView extends ViewMvp {
 
     void displayReviews(List<Review> reviews);
 
+    void getTrailersFailed();
+
+    void getReviewsFailed();
+
     void setListener(MovieDetailsFragmentViewListener listener);
 
     void unbindButterKnife();

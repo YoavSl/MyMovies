@@ -30,31 +30,38 @@ import java.util.List;
 public class MoviesListFragment extends BaseFragment implements
         MoviesListFragmentView.MoviesListFragmentViewListener {
     private static final String TAG = "MoviesListFragment";
+    public static final String ARG_QUERY = "arg_query";
     public static final String ARG_CATEGORY = "arg_category";
     public static final String ARG_API_CATEGORY_NAME = "arg_api_category_name";
     public static final String ACTION_REFRESH_MOVIES_LIST = "action_refresh_movies_list";
 
     private MoviesListFragmentViewImpl mViewMvp;
+    private String query;
     private String category;
     private String apiCategoryName;
     private MoviesRepository moviesRepository;
     private List<Movie> currentMovies;
-    private boolean isFetchingMovies;
+    private boolean getMoviesByQuery, isFetchingMovies;
     private int currentPage = 1;
     private IntentFilter refreshListFilter;
+    private boolean fragmentDestroyed;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Bundle args = getArguments();
-        if ((args != null) && (args.containsKey(ARG_CATEGORY)) &&
+        if ((args != null) && (args.containsKey(ARG_QUERY))) {
+            query = args.getString(ARG_QUERY);
+            getMoviesByQuery = true;
+        }
+        else if ((args != null) && (args.containsKey(ARG_CATEGORY)) &&
                 (args.containsKey(ARG_API_CATEGORY_NAME))) {
             category = args.getString(ARG_CATEGORY);
             apiCategoryName = args.getString(ARG_API_CATEGORY_NAME);
         }
         else
             throw new IllegalStateException("MoviesListFragment must be started " +
-                    "with category and apiCategoryName strings");
+                    "with either search query or category and apiCategoryName strings");
 
         mViewMvp = new MoviesListFragmentViewImpl(inflater, container);
 
@@ -65,7 +72,13 @@ public class MoviesListFragment extends BaseFragment implements
 
     private void init(Context context) {
         mViewMvp.setListener(this);
-        mViewMvp.setToolbarTitle(category);
+
+        if (getMoviesByQuery) {
+            String toolbarTitle = query.replace("", " ").trim();
+            mViewMvp.setToolbarTitle(toolbarTitle);
+        }
+        else
+            mViewMvp.setToolbarTitle(category);
 
         refreshListFilter = new IntentFilter(ACTION_REFRESH_MOVIES_LIST);
 
@@ -86,7 +99,7 @@ public class MoviesListFragment extends BaseFragment implements
     }
 
     private void getGenres() {
-        moviesRepository.getGenres(getContext(), new OnGetGenresCallback() {
+        moviesRepository.getGenres(new OnGetGenresCallback() {
             @Override
             public void onSuccess(List<Genre> genresList) {
                 moviesRepository.setGenres(genresList);
@@ -102,17 +115,40 @@ public class MoviesListFragment extends BaseFragment implements
     private void getMovies(int page) {
         isFetchingMovies = true;
 
-        moviesRepository.getMoviesByCategory(apiCategoryName, page, getContext(), new OnGetMoviesCallback() {
-            @Override
-            public void onSuccess(List<Movie> movies, int page) {
-                getMoviesSucceeded(movies, page);
-            }
+        if (getMoviesByQuery) {
+            moviesRepository.getMoviesByQuery(query, page, new OnGetMoviesCallback() {
+                @Override
+                public void onSuccess(List<Movie> movies, int page) {
+                    if (!fragmentDestroyed) {
+                        if (movies.size() > 0)
+                            getMoviesSucceeded(movies, page);
+                        else
+                            mViewMvp.displayEmptyList(false);
+                    }
+                }
 
-            @Override
-            public void onError() {
-                mViewMvp.getMoviesFailed();
-            }
-        });
+                @Override
+                public void onError() {
+                    if (!fragmentDestroyed)
+                        mViewMvp.displayEmptyList(true);
+                }
+            });
+        }
+        else {
+            moviesRepository.getMoviesByCategory(apiCategoryName, page, new OnGetMoviesCallback() {
+                @Override
+                public void onSuccess(List<Movie> movies, int page) {
+                    if (!fragmentDestroyed)
+                        getMoviesSucceeded(movies, page);
+                }
+
+                @Override
+                public void onError() {
+                    if (!fragmentDestroyed)
+                        mViewMvp.displayEmptyList(true);
+                }
+            });
+        }
     }
 
     private void getMoviesSucceeded(List<Movie> movies, int page) {
@@ -150,9 +186,8 @@ public class MoviesListFragment extends BaseFragment implements
 
     @Override
     public void onListScroll() {
-        if (!isFetchingMovies) {
+        if (!isFetchingMovies)
             getMovies(currentPage + 1);
-        }
     }
 
     private BroadcastReceiver refreshListReceiver = new BroadcastReceiver() {
@@ -182,5 +217,7 @@ public class MoviesListFragment extends BaseFragment implements
     public void onDestroyView() {
         super.onDestroyView();
         mViewMvp.unbindButterKnife();
+
+        fragmentDestroyed = true;
     }
 }

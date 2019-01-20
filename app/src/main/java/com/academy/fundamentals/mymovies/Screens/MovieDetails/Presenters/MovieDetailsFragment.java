@@ -72,7 +72,7 @@ public class MovieDetailsFragment extends BaseFragment implements
     }
 
     private void getTrailers(Movie movie) {
-        moviesRepository.getTrailers(getContext(), movie.getId(), new OnGetTrailersCallback() {
+        moviesRepository.getTrailers(movie.getId(), new OnGetTrailersCallback() {
             @Override
             public void onSuccess(List<Trailer> trailers) {
                 mViewMvp.displayTrailers(trailers);
@@ -80,12 +80,13 @@ public class MovieDetailsFragment extends BaseFragment implements
 
             @Override
             public void onError() {
+                mViewMvp.getTrailersFailed();
             }
         });
     }
 
     private void getReviews(Movie movie) {
-        moviesRepository.getReviews(getContext(), movie.getId(), new OnGetReviewsCallback() {
+        moviesRepository.getReviews(movie.getId(), new OnGetReviewsCallback() {
             @Override
             public void onSuccess(List<Review> reviews) {
                 mViewMvp.displayReviews(reviews);
@@ -93,6 +94,7 @@ public class MovieDetailsFragment extends BaseFragment implements
 
             @Override
             public void onError() {
+                mViewMvp.getReviewsFailed();
             }
         });
     }

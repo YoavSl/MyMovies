@@ -18,7 +18,7 @@
         style="@style/Toolbar" />
 
     <include
-        android:id="@+id/mostPopularCategoryCV"
+        android:id="@+id/searchCV"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/card_view_margin_horizontal"
@@ -26,6 +26,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintBottom_toTopOf="@id/mostPopularCategoryCV"
+        layout="@layout/movies_search" />
+
+    <include
+        android:id="@+id/mostPopularCategoryCV"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/card_view_margin_horizontal"
+        android:layout_marginEnd="@dimen/card_view_margin_horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/searchCV"
         app:layout_constraintBottom_toTopOf="@+id/nowPlayingCategoryCV"
         layout="@layout/movies_category_most_popular" />
 

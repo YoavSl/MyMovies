@@ -24,9 +24,9 @@ public interface MoviesListFragmentView extends ViewMvp {
 
     void displayMovies(List<Movie> movies);
 
-    void getMoviesFailed();
-
     void refreshList();
+
+    void displayEmptyList(boolean error);
 
     void unbindButterKnife();
 }

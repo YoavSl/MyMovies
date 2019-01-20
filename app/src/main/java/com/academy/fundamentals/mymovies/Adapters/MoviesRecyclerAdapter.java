@@ -2,6 +2,7 @@ package com.academy.fundamentals.mymovies.Adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.constraint.Group;
 import android.support.design.chip.Chip;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -31,6 +32,7 @@ public class MoviesRecyclerAdapter extends
     private final static String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/w500";
 
     private final MoviesAdapterOnClickHandler mClickHandler;
+    private Context mContext;
     private FavoritesRepository favoritesRepository;
     private List<Movie> movies;
     private AlphaAnimation fadeInAnim, fadeOutAnim;
@@ -41,11 +43,12 @@ public class MoviesRecyclerAdapter extends
 
     public MoviesRecyclerAdapter(MoviesAdapterOnClickHandler clickHandler, Context context, List<Movie> movies) {
         mClickHandler = clickHandler;
+        mContext = context;
         favoritesRepository = FavoritesRepository.getInstance(context);
 
         this.movies = new ArrayList<>(movies);
 
-        confInFavoritesAnimations(context);
+        confInFavoritesAnimations();
     }
 
     @NonNull
@@ -79,6 +82,7 @@ public class MoviesRecyclerAdapter extends
         @BindView(R.id.posterIV) ImageView posterIV;
         @BindView(R.id.releaseDateCP) Chip releaseDateCP;
         @BindView(R.id.titleTV) TextView titleTV;
+        @BindView(R.id.ratingCG) Group ratingCG;
         @BindView(R.id.ratingTV) TextView ratingTV;
         @BindView(R.id.overviewTV) TextView overviewTV;
         @BindView(R.id.inFavoritesVW) View inFavoritesVW;
@@ -92,10 +96,22 @@ public class MoviesRecyclerAdapter extends
         }
 
         private void bind(final Movie movie) {
-            releaseDateCP.setText(movie.getReleaseDate().split("-")[0]);   //Get only the year
             titleTV.setText(movie.getTitle());
-            ratingTV.setText(String.valueOf(movie.getRating()));
-            overviewTV.setText(movie.getOverview());
+
+            if (movie.getReleaseDate().isEmpty())
+                releaseDateCP.setVisibility(View.GONE);
+            else
+                releaseDateCP.setText(movie.getReleaseDate().split("-")[0]);   //Get only the year
+
+            if (movie.getRating() == 0)   //Hasn't been rated yet
+                ratingCG.setVisibility(View.GONE);
+            else
+                ratingTV.setText(String.valueOf(movie.getRating()));
+
+            if (movie.getOverview().isEmpty())
+                overviewTV.setText(mContext.getString(R.string.text_view_no_existing_overview));
+            else
+                overviewTV.setText(movie.getOverview());
 
             Glide.with(itemView)
                     .load(IMAGE_BASE_URL + movie.getPosterPath())
@@ -142,14 +158,14 @@ public class MoviesRecyclerAdapter extends
         }
     }
 
-    private void confInFavoritesAnimations(Context context){
+    private void confInFavoritesAnimations(){
         fadeInAnim = new AlphaAnimation(0.0f , 1.0f );
-        fadeInAnim.setDuration(context.getResources().
+        fadeInAnim.setDuration(mContext.getResources().
                 getInteger(R.integer.animation_duration_view_in_favorites));
         fadeInAnim.setFillAfter(true);
 
         fadeOutAnim = new AlphaAnimation( 1.0f , 0.0f );
-        fadeOutAnim.setDuration(context.getResources().
+        fadeOutAnim.setDuration(mContext.getResources().
                 getInteger(R.integer.animation_duration_view_in_favorites));
         fadeOutAnim.setFillAfter(true);
     }

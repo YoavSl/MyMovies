@@ -2,15 +2,17 @@ package com.academy.fundamentals.mymovies.Screens.MoviesList.MvpViews;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.Group;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.academy.fundamentals.mymovies.Adapters.MoviesRecyclerAdapter;
 import com.academy.fundamentals.mymovies.Models.Movie;
@@ -35,6 +37,9 @@ public class MoviesListFragmentViewImpl implements MoviesListFragmentView,
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.moviesRV) RecyclerView moviesRV;
     @BindView(R.id.loadingListPB) ProgressBar loadingPB;
+    @BindView(R.id.emptyListCG) Group emptyListCG;
+    @BindView(R.id.emptyListIV) ImageView emptyListIV;
+    @BindView(R.id.emptyListTV) TextView emptyListTV;
 
     public MoviesListFragmentViewImpl(LayoutInflater inflater, ViewGroup container) {
         mRootView = inflater.inflate(R.layout.fragment_movies_list, container, false);
@@ -84,7 +89,8 @@ public class MoviesListFragmentViewImpl implements MoviesListFragmentView,
                 int visibleItemCount = layoutManager.getChildCount();
                 int firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
 
-                if ((firstVisibleItem + visibleItemCount) >= (totalItemCount / 2)) {
+                if ((totalItemCount > visibleItemCount) &&
+                        ((firstVisibleItem + visibleItemCount) >= (totalItemCount / 2))) {
                     if (mListener != null)
                         mListener.onListScroll();
                 }
@@ -118,13 +124,23 @@ public class MoviesListFragmentViewImpl implements MoviesListFragmentView,
     }
 
     @Override
-    public void getMoviesFailed() {
-        Log.e(TAG, "Error, couldn't get movies");
+    public void refreshList() {
+        mMoviesRecyclerAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void refreshList() {
-        mMoviesRecyclerAdapter.notifyDataSetChanged();
+    public void displayEmptyList(boolean error) {
+        loadingPB.setVisibility(View.GONE);
+        emptyListCG.setVisibility(View.VISIBLE);
+
+        if (error) {
+            emptyListIV.setImageResource(R.drawable.ic_empty_list_error);
+            emptyListTV.setText(R.string.text_view_empty_list_error);
+        }
+        else {
+            emptyListIV.setImageResource(R.drawable.ic_empty_list_no_results);
+            emptyListTV.setText(R.string.text_view_empty_list_no_results);
+        }
     }
 
     @Override

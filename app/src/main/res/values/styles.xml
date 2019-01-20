@@ -87,10 +87,6 @@
         <item name="backgroundTint">@color/colorPrimaryDark</item>
     </style>
 
-    <style name="ImageViewCategory">
-        <item name="android:scaleType">centerCrop</item>
-    </style>
-
     <style name="ImageViewMoviePoster" >
         <item name="android:scaleType">centerCrop</item>
     </style>
@@ -107,8 +103,12 @@
         <item name="android:overScrollMode">never</item>
     </style>
 
+    <style name="SearchView" >
+        <item name="iconifiedByDefault">false</item>
+        <item name="queryBackground">@android:color/transparent</item>
+    </style>
+
     <style name="TextViewCategoryCardTitle" >
-        <item name="android:layout_marginStart">@dimen/text_view_category_card_title_margin_start</item>
         <item name="android:textSize">@dimen/text_view_category_card_title_text_size</item>
         <item name="android:textColor">@color/colorPrimary</item>
     </style>
@@ -153,13 +153,14 @@
         <item name="android:textColor">@android:color/white</item>
     </style>
 
-    <style name="TextViewNoFavorites" parent="ViewNoFavorites" >
-        <item name="android:textSize">@dimen/text_view_no_favorites_text_size</item>
+    <style name="TextViewEmptyList" parent="ViewEmptyList" >
+        <item name="android:textSize">@dimen/text_view_empty_list_text_size</item>
         <item name="android:textColor">@android:color/black</item>
     </style>
 
-    <style name="TextViewNoReviews" >
-        <item name="android:textSize">@dimen/text_view_no_reviews_text_size</item>
+    <style name="TextViewNoContent" >
+        <item name="android:alpha">0.7</item>
+        <item name="android:textSize">@dimen/text_view_no_content_text_size</item>
         <item name="android:textColor">@android:color/black</item>
     </style>
 
@@ -173,7 +174,7 @@
         <item name="android:textSize">@dimen/toolbar_text_size</item>
     </style>
 
-    <style name="ViewNoFavorites" >
+    <style name="ViewEmptyList" >
         <item name="android:alpha">0.5</item>
     </style>
 

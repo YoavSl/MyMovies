@@ -39,4 +39,32 @@
         app:layout_constraintBottom_toBottomOf="parent"
         style="@style/ProgressBarLoadingMovies" />
 
+    <android.support.constraint.Group
+        android:id="@+id/emptyListCG"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="emptyListIV, emptyListTV" />
+
+    <ImageView
+        android:id="@+id/emptyListIV"
+        android:layout_width="@dimen/image_view_list_empty_size"
+        android:layout_height="@dimen/image_view_list_empty_size"
+        android:contentDescription="@string/image_view_description_no_results"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        style="@style/ViewEmptyList" />
+
+    <TextView
+        android:id="@+id/emptyListTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/text_view_list_empty_margin_top"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/emptyListIV"
+        style="@style/TextViewEmptyList" />
+
 </android.support.constraint.ConstraintLayout>

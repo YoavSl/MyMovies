@@ -14,6 +14,14 @@ import retrofit2.http.Query;
 
 public interface TmdbAPI {
 
+    @GET("search/movie")
+    public Call<MoviesResponse> getMoviesByQuery(
+            @Query("query") String name,
+            @Query("api_key") String key,
+            @Query("language") String language,
+            @Query("page") int page
+    );
+
     @GET("movie/{category}")
     public Call<MoviesResponse> getMoviesByCategory(
             @Path("category") String category,
@@ -23,16 +31,10 @@ public interface TmdbAPI {
     );
 
     @GET("movie/{movie_id}")
-    public Call<Movie> getMovie(
+    public Call<Movie> getMovieById(
             @Path("movie_id") int id,
             @Query("api_key") String key,
             @Query("language") String language
-    );
-
-    @GET("search/movie")
-    public Call<Movie> getMovieByName(
-            @Query("api_key") String key,
-            @Query("query") String name
     );
 
     @GET("genre/movie/list")

@@ -1,7 +1,8 @@
-package com.academy.fundamentals.mymovies.Screens.CategoriesList.MvpViews;
+package com.academy.fundamentals.mymovies.Screens.HomeScreen.MvpViews;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -16,20 +17,22 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 
-public class CategoriesFragmentViewImpl implements CategoriesFragmentView {
-    private static final String TAG = "CategoriesFtViewImpl";
+public class HomeScreenFragmentViewImpl implements HomeScreenFragmentView {
+    private static final String TAG = "HomeScreenFtViewImpl";
 
     private View mRootView;
     private Unbinder unbinder;
-    private CategoriesFragmentViewListener mListener;
+    private HomeScreenFragmentViewListener mListener;
 
     @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.searchSV) SearchView searchSV;
 
-    public CategoriesFragmentViewImpl(LayoutInflater inflater, ViewGroup container) {
-        mRootView = inflater.inflate(R.layout.fragment_categories, container, false);
+    public HomeScreenFragmentViewImpl(LayoutInflater inflater, ViewGroup container) {
+        mRootView = inflater.inflate(R.layout.fragment_home_screen, container, false);
         unbinder = ButterKnife.bind(this, mRootView);
 
         confToolbar();
+        confSearch();
     }
 
     private void confToolbar() {
@@ -47,6 +50,26 @@ public class CategoriesFragmentViewImpl implements CategoriesFragmentView {
                 return true;
             }
         });
+    }
+
+    private void confSearch() {
+        searchSV.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                onSearchExecution(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+    }
+
+    private void onSearchExecution(String query) {
+        if (mListener != null)
+            mListener.onSearchExecution(query);
     }
 
     @OnClick({R.id.mostPopularCategoryCV, R.id.nowPlayingCategoryCV,
@@ -82,7 +105,7 @@ public class CategoriesFragmentViewImpl implements CategoriesFragmentView {
     }
 
     @Override
-    public void setListener(CategoriesFragmentViewListener listener) {
+    public void setListener(HomeScreenFragmentViewListener listener) {
         mListener = listener;
     }
 

@@ -43,6 +43,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior" >
 
         <android.support.constraint.ConstraintLayout
+            android:id="@+id/detailsCL"
             android:layout_width="match_parent"
             android:layout_height="match_parent" >
 
@@ -96,7 +97,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/text_view_movie_details_label_margin_start"
                 android:layout_marginTop="@dimen/text_view_trailers_label_margin_top"
-                android:visibility="gone"
                 android:text="@string/text_view_trailers_label"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/movieOverviewTV"
@@ -118,6 +118,17 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal" />
             </HorizontalScrollView>
+
+            <TextView
+                android:id="@+id/noTrailersTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/text_view_no_content_margin_start"
+                android:layout_marginTop="@dimen/text_view_no_content_margin_top"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/trailersLabelTV"
+                style="@style/TextViewNoContent" />
 
             <TextView
                 android:id="@+id/reviewsLabelTV"
@@ -148,16 +159,14 @@
                 android:id="@+id/noReviewsTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/text_view_no_reviews_margin_start"
-                android:layout_marginTop="@dimen/text_view_no_reviews_margin_top"
+                android:layout_marginStart="@dimen/text_view_no_content_margin_start"
+                android:layout_marginTop="@dimen/text_view_no_content_margin_top"
                 android:layout_marginBottom="@dimen/text_view_no_reviews_margin_bottom"
                 android:visibility="gone"
-                android:alpha="0.7"
-                android:text="@string/text_view_no_reviews"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/reviewsLabelTV"
                 app:layout_constraintBottom_toBottomOf="parent"
-                style="@style/TextViewNoReviews" />
+                style="@style/TextViewNoContent" />
 
         </android.support.constraint.ConstraintLayout>
 

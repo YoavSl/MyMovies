@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    style="@style/CardViewStyle" >
+
+    <android.support.v7.widget.SearchView
+        android:id="@+id/searchSV"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/card_view_search_height"
+        app:queryHint="@string/search_view_movie_search_hint"
+        style="@style/SearchView" />
+
+</android.support.v7.widget.CardView>

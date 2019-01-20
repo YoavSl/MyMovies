@@ -2,23 +2,23 @@ package com.academy.fundamentals.mymovies.Screens.FavoritesList.MvpViews;
 
 import android.os.Bundle;
 import android.support.constraint.Group;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.academy.fundamentals.mymovies.Adapters.FavoriteMoviesRecyclerAdapter;
-import com.academy.fundamentals.mymovies.Adapters.MoviesRecyclerAdapter;
 import com.academy.fundamentals.mymovies.Adapters.SortModesRecyclerAdapter;
 import com.academy.fundamentals.mymovies.Models.Movie;
 import com.academy.fundamentals.mymovies.Models.SortType;
 import com.academy.fundamentals.mymovies.R;
-import com.academy.fundamentals.mymovies.Screens.FavoritesList.Presenters.FavoritesListFragment;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
 
@@ -43,8 +43,10 @@ public class FavoritesListFragmentViewImpl implements FavoritesListFragmentView,
     @BindView(R.id.sortMenuEL) ExpandableLayout sortMenuEL;
     @BindView(R.id.sortModesRV) RecyclerView sortModesRV;
     @BindView(R.id.moviesRV) RecyclerView moviesRV;
-    @BindView(R.id.noFavoritesCG) Group noFavoritesCG;
     @BindView(R.id.loadingListPB) ProgressBar loadingPB;
+    @BindView(R.id.emptyListCG) Group emptyListCG;
+    @BindView(R.id.emptyListIV) ImageView emptyListIV;
+    @BindView(R.id.emptyListTV) TextView emptyListTV;
 
     public FavoritesListFragmentViewImpl(LayoutInflater inflater, ViewGroup container) {
         mRootView = inflater.inflate(R.layout.fragment_favorites_list, container, false);
@@ -130,11 +132,6 @@ public class FavoritesListFragmentViewImpl implements FavoritesListFragmentView,
     }
 
     @Override
-    public void getMovieFailed(int movieId) {
-        Log.e(TAG, "Error, couldn't get movie (id: " + movieId + ")");
-    }
-
-    @Override
     public void updateMoviesOrder(List<Movie> movies) {
         mFavoriteMoviesRecyclerAdapter.updateMoviesOrder(movies);
     }
@@ -146,19 +143,32 @@ public class FavoritesListFragmentViewImpl implements FavoritesListFragmentView,
 
     @Override
     public void displayMoviesCount(int moviesCount) {
-        if (moviesCount == 0) {
-            toolbar.setTitle(mRootView.getContext().getString(
-                    R.string.toolbar_title_favorites_empty));
-
-            displayEmptyList();
-        }
-        else
-            toolbar.setTitle(mRootView.getContext().getString(
+        toolbar.setTitle(mRootView.getContext().getString(
                     R.string.toolbar_title_favorites_not_empty, moviesCount));
     }
 
-    private void displayEmptyList() {
-        noFavoritesCG.setVisibility(View.VISIBLE);
+    @Override
+    public void displayEmptyList(boolean error) {
+        loadingPB.setVisibility(View.GONE);
+        emptyListCG.setVisibility(View.VISIBLE);
+
+        if (error) {
+            emptyListIV.setImageResource(R.drawable.ic_empty_list_error);
+            emptyListTV.setText(R.string.text_view_empty_list_error);
+        }
+        else {
+            emptyListIV.setImageResource(R.drawable.ic_empty_list_no_favorites);
+            emptyListTV.setText(R.string.text_view_empty_list_no_favorites);
+        }
+    }
+
+    @Override
+    public void getMoviesFailed(boolean failedEntirely) {
+        if (failedEntirely)
+            displayEmptyList(true);
+        else
+            Snackbar.make(mRootView, R.string.snackbar_couldnt_retrieve_all_favorites,
+                    Snackbar.LENGTH_LONG).show();
     }
 
     @Override

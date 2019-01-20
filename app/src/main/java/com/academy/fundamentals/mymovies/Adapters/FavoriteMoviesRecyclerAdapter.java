@@ -2,12 +2,12 @@ package com.academy.fundamentals.mymovies.Adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.constraint.Group;
 import android.support.design.chip.Chip;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,6 +31,7 @@ public class FavoriteMoviesRecyclerAdapter extends
     private final static String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/w500";
 
     private final FavoriteMoviesAdapterOnClickHandler mClickHandler;
+    private Context mContext;
     private FavoritesRepository favoritesRepository;
     private List<Movie> movies;
 
@@ -43,6 +44,7 @@ public class FavoriteMoviesRecyclerAdapter extends
     public FavoriteMoviesRecyclerAdapter(FavoriteMoviesAdapterOnClickHandler clickHandler,
                                          Context context, List<Movie> movies) {
         mClickHandler = clickHandler;
+        mContext = context;
         favoritesRepository = FavoritesRepository.getInstance(context);
 
         this.movies = new ArrayList<>(movies);
@@ -86,6 +88,7 @@ public class FavoriteMoviesRecyclerAdapter extends
         @BindView(R.id.posterIV) ImageView posterIV;
         @BindView(R.id.releaseDateCP) Chip releaseDateCP;
         @BindView(R.id.titleTV) TextView titleTV;
+        @BindView(R.id.ratingCG) Group ratingCG;
         @BindView(R.id.ratingTV) TextView ratingTV;
         @BindView(R.id.overviewTV) TextView overviewTV;
         @BindView(R.id.inFavoritesVW) View inFavoritesVW;
@@ -106,8 +109,21 @@ public class FavoriteMoviesRecyclerAdapter extends
 
             releaseDateCP.setText(movie.getReleaseDate().split("-")[0]);   //Get only the year
             titleTV.setText(movie.getTitle());
-            ratingTV.setText(String.valueOf(movie.getRating()));
-            overviewTV.setText(movie.getOverview());
+
+            if (movie.getReleaseDate().isEmpty())
+                releaseDateCP.setVisibility(View.GONE);
+            else
+                releaseDateCP.setText(movie.getReleaseDate().split("-")[0]);   //Get only the year
+
+            if (movie.getRating() == 0)   //Hasn't been rated yet
+                ratingCG.setVisibility(View.GONE);
+            else
+                ratingTV.setText(String.valueOf(movie.getRating()));
+
+            if (movie.getOverview().isEmpty())
+                overviewTV.setText(mContext.getString(R.string.text_view_no_existing_overview));
+            else
+                overviewTV.setText(movie.getOverview());
 
             inFavoritesVW.setVisibility(View.VISIBLE);
 

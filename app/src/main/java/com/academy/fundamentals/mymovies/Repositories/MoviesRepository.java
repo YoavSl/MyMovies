@@ -1,6 +1,5 @@
 package com.academy.fundamentals.mymovies.Repositories;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.academy.fundamentals.mymovies.API.APIClient;
@@ -16,7 +15,6 @@ import com.academy.fundamentals.mymovies.Callbacks.OnGetMovieCallback;
 import com.academy.fundamentals.mymovies.Callbacks.OnGetMoviesCallback;
 import com.academy.fundamentals.mymovies.Models.ReviewsResponse;
 import com.academy.fundamentals.mymovies.Models.TrailersResponse;
-import com.academy.fundamentals.mymovies.R;
 
 import java.util.List;
 
@@ -27,12 +25,12 @@ import retrofit2.Retrofit;
 
 
 public class MoviesRepository {
+    private static final String API_KEY = "e46fac10656466cafbc9ee4d988cdcb1";
     private static final String LANGUAGE = "en-US";
 
     private static MoviesRepository repository;
     private static APIClient apiClient;
     private List<Genre> genres;
-
     private TmdbAPI api;
 
     private MoviesRepository(TmdbAPI api) {
@@ -49,11 +47,32 @@ public class MoviesRepository {
         return repository;
     }
 
-    public void getMoviesByCategory(String apiCategoryName, int page,
-                                    Context context, final OnGetMoviesCallback callback) {
-        api.getMoviesByCategory(apiCategoryName,
-                context.getString(R.string.api_key_tmdb), LANGUAGE, page)
+    public void getMoviesByQuery(String query, int page, final OnGetMoviesCallback callback) {
+        api.getMoviesByQuery(query, API_KEY, LANGUAGE, page)
                 .enqueue(new Callback<MoviesResponse>() {
+                    @Override
+                    public void onResponse(@NonNull Call<MoviesResponse> call, @NonNull Response<MoviesResponse> response) {
+                        if (response.isSuccessful()) {
+                            MoviesResponse moviesResponse = response.body();
+
+                            if (moviesResponse != null && moviesResponse.getMovies() != null)
+                                callback.onSuccess(moviesResponse.getMovies(), moviesResponse.getPage());
+                            else
+                                callback.onError();
+                        } else
+                            callback.onError();
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<MoviesResponse> call, @NonNull Throwable t) {
+                        callback.onError();
+                    }
+                });
+    }
+
+    public void getMoviesByCategory(String apiCategoryName, int page, final OnGetMoviesCallback callback) {
+        api.getMoviesByCategory(apiCategoryName, API_KEY, LANGUAGE, page)
+            .enqueue(new Callback<MoviesResponse>() {
                     @Override
                     public void onResponse(@NonNull Call<MoviesResponse> call, @NonNull Response<MoviesResponse> response) {
                         if (response.isSuccessful()) {
@@ -75,8 +94,8 @@ public class MoviesRepository {
                 });
     }
 
-    public void getMovie(int movieId, Context context, final OnGetMovieCallback callback) {
-        api.getMovie(movieId, context.getString(R.string.api_key_tmdb), LANGUAGE)
+    public void getMovieById(int movieId, final OnGetMovieCallback callback) {
+        api.getMovieById(movieId, API_KEY, LANGUAGE)
                 .enqueue(new Callback<Movie>() {
                     @Override
                     public void onResponse(@NonNull Call<Movie> call, @NonNull Response<Movie> response) {
@@ -99,8 +118,8 @@ public class MoviesRepository {
                 });
     }
 
-    public void getGenres(Context context, final OnGetGenresCallback callback) {
-        api.getGenres(context.getString(R.string.api_key_tmdb), LANGUAGE)
+    public void getGenres(final OnGetGenresCallback callback) {
+        api.getGenres(API_KEY, LANGUAGE)
                 .enqueue(new Callback<GenresResponse>() {
                     @Override
                     public void onResponse(Call<GenresResponse> call, Response<GenresResponse> response) {
@@ -123,8 +142,8 @@ public class MoviesRepository {
                 });
     }
 
-    public void getTrailers(Context context, int movieId, final OnGetTrailersCallback callback) {
-        api.getTrailers(movieId, context.getString(R.string.api_key_tmdb), LANGUAGE)
+    public void getTrailers(int movieId, final OnGetTrailersCallback callback) {
+        api.getTrailers(movieId, API_KEY, LANGUAGE)
                 .enqueue(new Callback<TrailersResponse>() {
                     @Override
                     public void onResponse(@NonNull Call<TrailersResponse> call, @NonNull Response<TrailersResponse> response) {
@@ -147,8 +166,8 @@ public class MoviesRepository {
                 });
     }
 
-    public void getReviews(Context context, int movieId, final OnGetReviewsCallback callback) {
-        api.getReviews(movieId, context.getString(R.string.api_key_tmdb), LANGUAGE)
+    public void getReviews(int movieId, final OnGetReviewsCallback callback) {
+        api.getReviews(movieId, API_KEY, LANGUAGE)
                 .enqueue(new Callback<ReviewsResponse>() {
                     @Override
                     public void onResponse(@NonNull Call<ReviewsResponse> call, @NonNull Response<ReviewsResponse> response) {

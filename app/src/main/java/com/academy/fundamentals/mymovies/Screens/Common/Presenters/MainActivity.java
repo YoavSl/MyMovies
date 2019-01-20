@@ -6,10 +6,12 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
 import com.academy.fundamentals.mymovies.R;
-import com.academy.fundamentals.mymovies.Screens.CategoriesList.Presenters.CategoriesFragment;
+import com.academy.fundamentals.mymovies.Screens.HomeScreen.Presenters.HomeScreenFragment;
 import com.academy.fundamentals.mymovies.Screens.Common.MvpViews.RootViewMvpImpl;
 import com.academy.fundamentals.mymovies.Screens.FavoritesList.Presenters.FavoritesListFragment;
 import com.academy.fundamentals.mymovies.Screens.MoviesDetailsList.Presenters.MoviesDetailsListFragment;
+
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity implements BaseFragment.AbstractFragmentCallback {
@@ -24,7 +26,7 @@ public class MainActivity extends AppCompatActivity implements BaseFragment.Abst
 
         //Show the default fragment if the application is not restored
         if (savedInstanceState == null)
-            replaceFragment(CategoriesFragment.class, false, null);
+            replaceFragment(HomeScreenFragment.class, false, null);
     }
 
     @Override
@@ -49,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements BaseFragment.Abst
 
         if (newFragment instanceof MoviesDetailsListFragment)
             ft.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, R.anim.anim_slide_in_right, R.anim.anim_slide_out_right);
-        else if (!(newFragment instanceof CategoriesFragment))
+        else if (!(newFragment instanceof HomeScreenFragment))
             ft.setCustomAnimations(R.anim.anim_slide_in_left, R.anim.anim_slide_out_left, R.anim.anim_slide_in_right, R.anim.anim_slide_out_right);
 
         if ((newFragment instanceof FavoritesListFragment) || (newFragment instanceof MoviesDetailsListFragment)) {

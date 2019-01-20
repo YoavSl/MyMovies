@@ -1,13 +1,14 @@
 package com.academy.fundamentals.mymovies.Screens.MovieDetails.MvpViews;
 
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
 import android.support.design.chip.Chip;
 import android.support.design.chip.ChipGroup;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,11 +50,12 @@ public class MovieDetailsFragmentViewImpl implements MovieDetailsFragmentView {
     @BindView(R.id.movieBackdropIV) ImageView movieBackdropIV;
     @BindView(R.id.movieTitleTB) Toolbar movieTitleTB;
     @BindView(R.id.favoriteFAB) FloatingActionButton favoriteFAB;
+    @BindView(R.id.detailsCL) ConstraintLayout detailsCL;
     @BindView(R.id.movieRatingRB) RatingBar movieRatingRB;
     @BindView(R.id.movieReleaseDateGenresCG) ChipGroup movieReleaseDateGenresCG;
     @BindView(R.id.movieOverviewTV) TextView movieOverviewTV;
-    @BindView(R.id.trailersLabelTV) TextView trailersLabelTV;
     @BindView(R.id.movieTrailersLL) LinearLayout movieTrailersLL;
+    @BindView(R.id.noTrailersTV) TextView noTrailersTV;
     @BindView(R.id.reviewsRV) RecyclerView reviewsRV;
     @BindView(R.id.noReviewsTV) TextView noReviewsTV;
 
@@ -74,12 +76,19 @@ public class MovieDetailsFragmentViewImpl implements MovieDetailsFragmentView {
     @Override
     public void bindMovieDetails(Movie movie, List<Genre> genres, boolean inFavorites) {
         movieTitleTB.setTitle(movie.getTitle());
-        movieOverviewTV.setText(movie.getOverview());
         movieRatingRB.setRating(movie.getRating());
 
-        Chip releaseDateChip = (Chip) mInflater.inflate(R.layout.chip_group_item_release_date, movieReleaseDateGenresCG, false);
-        releaseDateChip.setText(movie.getReleaseDate().split("-")[0]);   //Get only the year
-        movieReleaseDateGenresCG.addView(releaseDateChip);
+        if (!movie.getReleaseDate().isEmpty()) {
+            Chip releaseDateChip = (Chip) mInflater.inflate(R.layout.chip_group_item_release_date, movieReleaseDateGenresCG, false);
+            releaseDateChip.setText(movie.getReleaseDate().split("-")[0]);   //Get only the year
+            movieReleaseDateGenresCG.addView(releaseDateChip);
+        }
+
+        if (movie.getOverview().isEmpty())
+            movieOverviewTV.setText(mRootView.getContext().
+                    getString(R.string.text_view_no_existing_overview));
+        else
+            movieOverviewTV.setText(movie.getOverview());
 
         setMovieGenres(genres, movie.getGenreIds());
         setFavoriteFab(inFavorites);
@@ -114,34 +123,44 @@ public class MovieDetailsFragmentViewImpl implements MovieDetailsFragmentView {
 
     @Override
     public void displayTrailers(List<Trailer> trailers) {
-        trailersLabelTV.setVisibility(View.VISIBLE);
-        LayoutInflater inflater = LayoutInflater.from(mRootView.getContext());
+        if (trailers.size() > 0) {
+            for (final Trailer trailer : trailers) {
+                View parent = mInflater.inflate(R.layout.thumbnail_trailer, movieTrailersLL, false);
+                ImageView thumbnail = parent.findViewById(R.id.thumbnailIV);
 
-        for (final Trailer trailer : trailers) {
-            View parent = inflater.inflate(R.layout.thumbnail_trailer, movieTrailersLL, false);
-            ImageView thumbnail = parent.findViewById(R.id.thumbnailIV);
+                thumbnail.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mListener != null)
+                            mListener.onTrailerClick(String.format(YOUTUBE_VIDEO_URL, trailer.getKey()));
+                    }
+                });
 
-            thumbnail.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mListener != null)
-                        mListener.onTrailerClick(String.format(YOUTUBE_VIDEO_URL, trailer.getKey()));
-                }
-            });
+                Glide.with(mRootView)
+                        .load(String.format(YOUTUBE_THUMBNAIL_URL, trailer.getKey()))
+                        .apply(RequestOptions.placeholderOf(R.color.colorPrimary).centerCrop())
+                        .into(thumbnail);
 
-            Glide.with(mRootView)
-                    .load(String.format(YOUTUBE_THUMBNAIL_URL, trailer.getKey()))
-                    .apply(RequestOptions.placeholderOf(R.color.colorPrimary).centerCrop())
-                    .into(thumbnail);
+                movieTrailersLL.addView(parent);
+            }
+        }
+        else {
+            noTrailersTV.setVisibility(View.VISIBLE);
+            noTrailersTV.setText(R.string.text_view_no_existing_trailers);
 
-            movieTrailersLL.addView(parent);
+            ConstraintSet set = new ConstraintSet();
+            set.clone(detailsCL);
+            set.connect(R.id.reviewsLabelTV, ConstraintSet.TOP, R.id.noTrailersTV, ConstraintSet.BOTTOM);
+            set.applyTo(detailsCL);
         }
     }
 
     @Override
     public void displayReviews(List<Review> reviews) {
-        if (reviews.isEmpty())
+        if (reviews.isEmpty()) {
             noReviewsTV.setVisibility(View.VISIBLE);
+            noReviewsTV.setText(R.string.text_view_no_existing_reviews);
+        }
         else {
             LinearLayoutManager layoutManager = new LinearLayoutManager(mRootView.getContext(),
                     LinearLayoutManager.VERTICAL, false);
@@ -150,6 +169,23 @@ public class MovieDetailsFragmentViewImpl implements MovieDetailsFragmentView {
             ReviewsRecyclerAdapter mReviewsRecyclerAdapter = new ReviewsRecyclerAdapter(reviews);
             reviewsRV.setAdapter(mReviewsRecyclerAdapter);
         }
+    }
+
+    @Override
+    public void getTrailersFailed() {
+        noTrailersTV.setVisibility(View.VISIBLE);
+        noTrailersTV.setText(R.string.text_view_get_trailers_failed);
+
+        ConstraintSet set = new ConstraintSet();
+        set.clone(detailsCL);
+        set.connect(R.id.reviewsLabelTV, ConstraintSet.TOP, R.id.noTrailersTV, ConstraintSet.BOTTOM);
+        set.applyTo(detailsCL);
+    }
+
+    @Override
+    public void getReviewsFailed() {
+        noReviewsTV.setVisibility(View.VISIBLE);
+        noReviewsTV.setText(R.string.text_view_get_reviews_failed);
     }
 
     @Override

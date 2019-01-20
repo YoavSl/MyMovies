@@ -48,6 +48,12 @@
             app:layout_constraintTop_toTopOf="parent"
             style="@style/TextViewMovieCardTitle" />
 
+        <android.support.constraint.Group
+            android:id="@+id/ratingCG"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="ratingTV, ratingIV" />
+
         <TextView
             android:id="@+id/ratingTV"
             android:layout_width="wrap_content"

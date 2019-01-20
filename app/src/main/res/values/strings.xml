@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">My.Movies</string>
-    <string name="api_key_tmdb">e46fac10656466cafbc9ee4d988cdcb1</string>
     <string name="api_category_popular">popular</string>
     <string name="api_category_now_playing">now_playing</string>
     <string name="api_category_upcoming">upcoming</string>
@@ -18,9 +17,19 @@
     <string name="image_view_description_movie_rating">Movie rating icon</string>
     <string name="image_view_description_trailer_thumbnail">Trailer thumbnail</string>
     <string name="image_view_description_no_favorites">No favorites icon</string>
+    <string name="image_view_description_no_results">No results icon</string>
     <string name="image_view_description_sorting_direction">Sorting direction</string>
-    <string name="text_view_no_favorites">No favorites</string>
-    <string name="text_view_no_reviews">This movie hasn\'t been reviewed yet.</string>
+    <string name="search_view_movie_search_hint">Enter Movie Name</string>
+    <string name="snackbar_couldnt_retrieve_all_favorites">Error! couldn\'t retrieve all favorites</string>
+    <string name="snackbar_couldnt_retrieve_all_details">Error! couldn\'t retrieve all details</string>
+    <string name="text_view_empty_list_error">Error! please try again</string>
+    <string name="text_view_empty_list_no_favorites">No favorites</string>
+    <string name="text_view_empty_list_no_results">No results</string>
+    <string name="text_view_no_existing_overview">No overview available.</string>
+    <string name="text_view_no_existing_trailers">No trailers available.</string>
+    <string name="text_view_no_existing_reviews">This movie hasn\'t been reviewed yet.</string>
+    <string name="text_view_get_trailers_failed">Couldn\'t retrieve trailers.</string>
+    <string name="text_view_get_reviews_failed">Couldn\'t retrieve reviews.</string>
     <string name="text_view_overview_label">Overview</string>
     <string name="text_view_trailers_label">Trailers</string>
     <string name="text_view_reviews_label">Reviews</string>

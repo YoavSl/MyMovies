@@ -25,13 +25,15 @@ public interface FavoritesListFragmentView extends ViewMvp {
 
     void displayMovies(List<Movie> movies);
 
-    void getMovieFailed(int id);
-
     void updateMoviesOrder(List<Movie> movies);
 
     void removeMovie(int pos);
 
     void displayMoviesCount(int moviesCount);
+
+    void displayEmptyList(boolean error);
+
+    void getMoviesFailed(boolean failedEntirely);
 
     void unbindButterKnife();
 }
