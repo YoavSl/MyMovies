@@ -11,13 +11,22 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/card_view_category_height" >
 
+        <View
+            android:id="@+id/categoryIconBackgroundVW"
+            android:layout_width="@dimen/view_category_card_icon_background_width"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            style="@style/ViewCategoryIconBackground" />
+
         <ImageView
             android:id="@+id/categoryIV"
             android:layout_width="@dimen/image_view_category_card_icon_size"
             android:layout_height="@dimen/image_view_category_card_icon_size"
-            android:layout_marginStart="@dimen/image_view_category_card_icon_margin_start"
             android:contentDescription="@string/image_view_description_category_most_popular"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@id/categoryIconBackgroundVW"
+            app:layout_constraintEnd_toEndOf="@id/categoryIconBackgroundVW"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:srcCompat="@drawable/ic_category_popular" />
@@ -28,7 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/text_view_category_card_title_margin_start"
             android:text="@string/category_popular"
-            app:layout_constraintStart_toEndOf="@id/categoryIV"
+            app:layout_constraintStart_toEndOf="@id/categoryIconBackgroundVW"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             style="@style/TextViewCategoryCardTitle" />

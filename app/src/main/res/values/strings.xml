@@ -10,10 +10,10 @@
     <string name="category_top_rated">T o p \u0020 r a t e d</string>
     <string name="image_view_description_movie_poster">Movie poster</string>
     <string name="image_view_description_movie_backdrop">Movie backdrop</string>
-    <string name="image_view_description_category_most_popular">Most popular category image</string>
-    <string name="image_view_description_category_now_playing">Now playing category image</string>
-    <string name="image_view_description_category_upcoming">Upcoming category image</string>
-    <string name="image_view_description_category_top_rated">Top rated category image</string>
+    <string name="image_view_description_category_most_popular">Most popular category icon</string>
+    <string name="image_view_description_category_now_playing">Now playing category icon</string>
+    <string name="image_view_description_category_upcoming">Upcoming category icon</string>
+    <string name="image_view_description_category_top_rated">Top rated category icon</string>
     <string name="image_view_description_movie_rating">Movie rating icon</string>
     <string name="image_view_description_trailer_thumbnail">Trailer thumbnail</string>
     <string name="image_view_description_no_favorites">No favorites icon</string>

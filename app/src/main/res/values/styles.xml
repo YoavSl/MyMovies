@@ -174,6 +174,10 @@
         <item name="android:textSize">@dimen/toolbar_text_size</item>
     </style>
 
+    <style name="ViewCategoryIconBackground" >
+        <item name="android:background">@color/colorPrimaryDark</item>
+    </style>
+
     <style name="ViewEmptyList" >
         <item name="android:alpha">0.5</item>
     </style>
